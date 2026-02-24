@@ -18,6 +18,7 @@
 #include <sys/mman.h>
 #include <sys/ioctl.h>
 #include <string.h>
+#include <stdio.h>
 
 #include <linux/fb.h>
 
@@ -120,26 +121,37 @@ od --address-radix=n --width=16 -v -t x1 -j 4 -N 2048 lat0-16.psfu
 */
 void screen_shift(char **buffer, char *new_content){
   printf("Shifting screen with new content: %s\n", new_content);
-  int temp = strlen(new_content)/64 + 1 ;
+  int content_len = strlen(new_content);
+  int temp = content_len / 64 + 1;
   int new_rows = (temp > 20) ? 20 : temp;
   int i = 0;
 
+  printf("Calculated new rows needed: %d\n", new_rows);
+
   // shift the screen up by new_rows
   for(; i < (20 - new_rows); i++){
+    printf("Shifting row %d to row %d\n", i + new_rows, i);
     for(int j = 0; j < 64; j++){
+      printf("Copying character from row %d, col %d to row %d, col %d\n", i + new_rows, j, i, j);
       buffer[i][j] = buffer[i + new_rows][j];
     }
-    fbputs(buffer[i], i+1, 0);
+    fbputs((const char *)buffer[i], i+1, 0);
   }
 
   printf("Shifted screen by %d rows\n", new_rows);
 
   // add new content to the bottom of the screen
-  for( ; i < 20; i++){
+  for(; i < 20; i++){
+    int offset = (i - (20 - new_rows)) * 64;
+    printf("Adding new content to row %d with offset %d\n", i, offset);
     for(int j = 0; j < 64; j++){
-      buffer[i][j] = new_content[(i - (20 - new_rows)) * 64 + j];
+      if(offset + j < content_len){
+        buffer[i][j] = new_content[offset + j];
+      } else {
+        buffer[i][j] = 0;
+      }
     }
-    fbputs(buffer[i], i+1, 0);
+    fbputs((const char *)buffer[i], i+1, 0);
   }
 
   printf("Added new content to the bottom of the screen\n");
