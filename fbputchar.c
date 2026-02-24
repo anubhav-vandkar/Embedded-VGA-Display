@@ -119,7 +119,7 @@ void fbputs(const char *s, int row, int col)
 od --address-radix=n --width=16 -v -t x1 -j 4 -N 2048 lat0-16.psfu
 
 */
-void screen_shift(char **buffer, char *new_content){
+void screen_shift(char **screen_buffer, char *new_content){
   printf("Shifting screen with new content: %s\n", new_content);
   int content_len = strlen(new_content);
   int temp = content_len / 64 + 1;
@@ -130,18 +130,19 @@ void screen_shift(char **buffer, char *new_content){
 
   // shift the screen up by new_rows
   for(; i < (20 - new_rows); i++){
-    buffer[i] = buffer[i+new_rows];
+    screen_buffer[i] = screen_buffer[i+new_rows];
     printf("Shifted row %d to row %d\n", i+new_rows, i);
-    fbputs((const char *)buffer[i], i+1, 0);
+    
+    fbputs((const char *)screen_buffer[i], i+1, 0);
   }
 
   printf("Shifted screen by %d rows\n", new_rows);
 
   // add new content to the bottom of the screen
   for(; i < 20; i++){
-    buffer[i] = new_content + (i - (20 - new_rows)) * 64;
-    printf("Added new content to row %d: %s\n", i, buffer[i]);
-    fbputs((const char *)buffer[i], i+1, 0);
+    screen_buffer[i] = new_content + (i - (20 - new_rows)) * 64;
+    printf("Added new content to row %d: %s\n", i, screen_buffer[i]);
+    fbputs((const char *)screen_buffer[i], i+1, 0);
   }
 
   printf("Added new content to the bottom of the screen\n");
