@@ -17,6 +17,7 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <sys/ioctl.h>
+#include <string.h>
 
 #include <linux/fb.h>
 
@@ -119,7 +120,8 @@ od --address-radix=n --width=16 -v -t x1 -j 4 -N 2048 lat0-16.psfu
 */
 void screen_shift(char **buffer, char *new_content){
   printf("Shifting screen with new content: %s\n", new_content);
-  int new_rows = min(strlen(new_content) / 64 + 1, 20);
+  int temp = strlen(new_content)/64 + 1 ;
+  int new_rows = (temp > 20) ? 20 : temp;
   int i = 0;
 
   // shift the screen up by new_rows
