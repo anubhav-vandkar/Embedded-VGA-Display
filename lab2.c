@@ -166,7 +166,7 @@ int main()
 
           // LOCK SCREEN BUFFER
           pthread_mutex_lock(&screen_buffer_mutex);
-          screen_shift((char *)screen_buffer, input_buffer);
+          screen_shift(screen_buffer, input_buffer);
           // UNLOCK SCREEN BUFFER
           pthread_mutex_unlock(&screen_buffer_mutex);
 
@@ -212,7 +212,7 @@ void *network_thread_f(void *ignored)
 
     // LOCK SCREEN BUFFER
     //pthread_mutex_lock(&screen_buffer_mutex);
-    screen_shift((char *)screen_buffer, recvBuf);
+    screen_shift(screen_buffer, recvBuf);
     // UNLOCK SCREEN BUFFER
     //pthread_mutex_unlock(&screen_buffer_mutex);
   }

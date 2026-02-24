@@ -119,7 +119,7 @@ void fbputs(const char *s, int row, int col)
 od --address-radix=n --width=16 -v -t x1 -j 4 -N 2048 lat0-16.psfu
 
 */
-void screen_shift(char **screen_buffer, char *new_content){
+void screen_shift(char screen_buffer[20][64], char *new_content){
   printf("Shifting screen with new content: %s\n", new_content);
   int content_len = strlen(new_content);
   int temp = content_len / 64 + 1;
