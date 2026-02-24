@@ -114,8 +114,9 @@ int main()
     fbcursor(cursor_pos_y, cursor_pos_x);
     if (transferred == sizeof(packet)) {
 
+
       sprintf(keystate, "%02x %02x %02x", packet.modifiers, packet.keycode[0], packet.keycode[1]);
-      printf("%s\n", keystate);
+      printf("Pressed key: %s\n", keystate);
       fbputs(keystate, 6, 0);
 
       if((packet.modifiers & USB_LSHIFT) || (packet.modifiers & USB_RSHIFT)){ 
@@ -206,14 +207,14 @@ void *network_thread_f(void *ignored)
   /* Receive data */
   while ((n = read(sockfd, &recvBuf, BUFFER_SIZE - 1)) > 0 ) {
     recvBuf[n] = '\0';
-    printf("%s", recvBuf);
+    printf("Received: %s\n", recvBuf);
     //fbputs(recvBuf, 8, 0);
 
     // LOCK SCREEN BUFFER
-    pthread_mutex_lock(&screen_buffer_mutex);
+    //pthread_mutex_lock(&screen_buffer_mutex);
     screen_shift((char *)screen_buffer, recvBuf);
     // UNLOCK SCREEN BUFFER
-    pthread_mutex_unlock(&screen_buffer_mutex);
+    //pthread_mutex_unlock(&screen_buffer_mutex);
   }
   return NULL;
 }

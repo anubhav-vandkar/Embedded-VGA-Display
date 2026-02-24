@@ -118,6 +118,7 @@ od --address-radix=n --width=16 -v -t x1 -j 4 -N 2048 lat0-16.psfu
 
 */
 void screen_shift(char **buffer, char *new_content){
+  printf("Shifting screen with new content: %s\n", new_content);
   int new_rows = min(strlen(new_content) / 64 + 1, 20);
   int i = 0;
 
@@ -129,6 +130,8 @@ void screen_shift(char **buffer, char *new_content){
     fbputs(buffer[i], i+1, 0);
   }
 
+  printf("Shifted screen by %d rows\n", new_rows);
+
   // add new content to the bottom of the screen
   for( ; i < 20; i++){
     for(int j = 0; j < 64; j++){
@@ -136,6 +139,8 @@ void screen_shift(char **buffer, char *new_content){
     }
     fbputs(buffer[i], i+1, 0);
   }
+
+  printf("Added new content to the bottom of the screen\n");
 }
 
 void fbcursor(int row, int col){
