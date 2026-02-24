@@ -11,6 +11,6 @@ extern int fbopen(void);
 extern void fbputchar(char, int, int);
 extern void fbputs(const char *, int, int);
 extern void fbcursor(int, int);
-extern void screen_shift(char **buffer, char *new_content);
+extern void screen_shift(char screen_buffer[20][64], char *new_content);
 
 #endif
