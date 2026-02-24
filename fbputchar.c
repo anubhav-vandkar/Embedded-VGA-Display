@@ -130,7 +130,7 @@ void screen_shift(char **screen_buffer, char *new_content){
 
   // shift the screen up by new_rows
   for(; i < (20 - new_rows); i++){
-    screen_buffer[i] = screen_buffer[i+new_rows];
+    strcpy(screen_buffer[i], screen_buffer[i+new_rows]);
     printf("Shifted row %d to row %d\n", i+new_rows, i);
     
     fbputs((const char *)screen_buffer[i], i+1, 0);
@@ -140,7 +140,7 @@ void screen_shift(char **screen_buffer, char *new_content){
 
   // add new content to the bottom of the screen
   for(; i < 20; i++){
-    screen_buffer[i] = new_content + (i - (20 - new_rows)) * 64;
+    strcpy(screen_buffer[i], new_content + (i - (20 - new_rows)) * 64);
     printf("Added new content to row %d: %s\n", i, screen_buffer[i]);
     fbputs((const char *)screen_buffer[i], i+1, 0);
   }
