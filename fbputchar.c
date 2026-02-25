@@ -126,22 +126,18 @@ void screen_shift(char screen_buffer[20][64], char *new_content){
   int new_rows = (temp > 20) ? 20 : temp;
   int i = 0;
 
-  printf("Calculated new rows needed: %d\n", new_rows);
-
   // shift the screen up by new_rows
   for(; i < (20 - new_rows); i++){
+    memset(screen_buffer[i], 0, sizeof(screen_buffer[i]));
     strcpy(screen_buffer[i], screen_buffer[i+new_rows]);
-    printf("Shifted row %d to row %d\n", i+new_rows, i);
     
     fbputs((const char *)screen_buffer[i], i+1, 0);
   }
 
-  printf("Shifted screen by %d rows\n", new_rows);
-
   // add new content to the bottom of the screen
   for(; i < 20; i++){
+    memset(screen_buffer[i], 0, sizeof(screen_buffer[i]));
     strcpy(screen_buffer[i], new_content + (i - (20 - new_rows)) * 64);
-    printf("Added new content to row %d: %s\n", i, screen_buffer[i]);
     fbputs((const char *)screen_buffer[i], i+1, 0);
   }
 
