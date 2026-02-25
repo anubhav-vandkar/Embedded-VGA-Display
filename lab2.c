@@ -113,7 +113,7 @@ int main()
 
     fbcursor(cursor_pos_y, cursor_pos_x);
     if (transferred == sizeof(packet)) {
-      
+
       sprintf(keystate, "%02x %02x %02x", packet.modifiers, packet.keycode[0], packet.keycode[1]);
       printf("Pressed key: %s\n", keystate);
       fbputs(keystate, 0, 35);
@@ -121,23 +121,26 @@ int main()
 
         //SHIFT Pressed
       if(packet.keycode[0] >= 0x04 && packet.keycode[0] <= 0x1D){ /* a-z */
+        char c = packet.keycode[0]-0x04 + 'a';
         if((packet.modifiers & USB_LSHIFT) || (packet.modifiers & USB_RSHIFT))
-          packet.keycode[0] += 0x1D;
+          c = c - 'a' + 'A';
 
         if(strlen(input_buffer) < BUFFER_SIZE - 1){
-          input_buffer[strlen(input_buffer)] = packet.keycode[0];
-          fbputchar(packet.keycode[0], cursor_pos_y, cursor_pos_x);
+          input_buffer[strlen(input_buffer)] = c;
+          fbputchar(c, cursor_pos_y, cursor_pos_x);
           cursor_pos_x = (cursor_pos_x + 1) % 64;
           cursor_pos_y = cursor_pos_y + (cursor_pos_x == 0);
           fbcursor(cursor_pos_y, cursor_pos_x);
         }
       }
       if(packet.keycode[1] >= 0x04 && packet.keycode[1] <= 0x1D){ /* a-z */
-        packet.keycode[1] += 0x1D;
+        char c = packet.keycode[1]-0x04 + 'a';
+        if((packet.modifiers & USB_LSHIFT) || (packet.modifiers & USB_RSHIFT))
+          c = c - 'a' + 'A';
 
         if(strlen(input_buffer) < BUFFER_SIZE - 1){
-          input_buffer[strlen(input_buffer)] = packet.keycode[1];
-          fbputchar(packet.keycode[1], cursor_pos_y, cursor_pos_x);
+          input_buffer[strlen(input_buffer)] = c;
+          fbputchar(c, cursor_pos_y, cursor_pos_x);
           cursor_pos_x = (cursor_pos_x + 1) % 64;
           cursor_pos_y = cursor_pos_y + (cursor_pos_x == 0);
           fbcursor(cursor_pos_y, cursor_pos_x);
