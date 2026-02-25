@@ -58,9 +58,6 @@ int main()
   memset(input_buffer, 0, sizeof(input_buffer));
 
   memset(screen_buffer, 0, sizeof(screen_buffer));
-  for(int i=0; i < 20; i++){
-    fbputs(screen_buffer[0], i+1, 0);
-  }
 
   int cursor_pos_x = 0;
   int cursor_pos_y = 22;
@@ -70,7 +67,10 @@ int main()
     exit(1);
   }
 
-  /* Draw rows of asterisks across the top and bottom of the screen */
+  /* Clear screen */
+  for(int i=0; i < 20; i++){
+    fbputs(screen_buffer[0], i+1, 0);
+  }
 
   fbputs("Welcome to the CSEE 4840 Chat!", 0, 1);
   
@@ -169,12 +169,6 @@ int main()
       if(packet.keycode[0] == 0x28 && (strlen(input_buffer) != 0)){
         write(sockfd, input_buffer, cursor_pos_x + (cursor_pos_y - 22) * 64);
 
-        // LOCK SCREEN BUFFER
-        pthread_mutex_lock(&screen_buffer_mutex);
-        screen_shift(screen_buffer, input_buffer);
-        // UNLOCK SCREEN BUFFER
-        pthread_mutex_unlock(&screen_buffer_mutex);
-
         cursor_pos_x = 0;
         cursor_pos_y = 22;
         fbcursor(cursor_pos_y, cursor_pos_x);
@@ -212,6 +206,7 @@ void *network_thread_f(void *ignored)
   char recvBuf[BUFFER_SIZE];
   int n;
   /* Receive data */
+  memset(recvBuf, 0, sizeof(recvBuf));
   while ((n = read(sockfd, &recvBuf, BUFFER_SIZE - 1)) > 0 ) {
     recvBuf[n] = '\0';
     printf("Received: %s\n", recvBuf);
