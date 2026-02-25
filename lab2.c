@@ -57,7 +57,9 @@ int main()
   char input_buffer[BUFFER_SIZE];
   memset(input_buffer, 0, sizeof(input_buffer));
 
-  memset(screen_buffer, 0, sizeof(screen_buffer));
+  for(int i = 0; i < 20; i++){
+    memset(screen_buffer[i], ' ', sizeof(screen_buffer[i]));
+  } 
 
   int cursor_pos_x = 0;
   int cursor_pos_y = 22;
@@ -69,7 +71,7 @@ int main()
 
   /* Clear screen */
   for(int i=0; i < 20; i++){
-    fbputs(screen_buffer[0], i+1, 0);
+    fbputs(screen_buffer[i], i+1, 0);
   }
 
   fbputs("Welcome to the CSEE 4840 Chat!", 0, 1);
@@ -152,6 +154,7 @@ int main()
 
       // BACKSPACE
       if(packet.keycode[0] == 0x2A){
+        fbputchar(' ', cursor_pos_y, cursor_pos_x);
         if(cursor_pos_x > 0){
           cursor_pos_x--;
         }
@@ -161,7 +164,6 @@ int main()
         }
         input_buffer[strlen(input_buffer) - 1] = '\0';
         fbcursor(cursor_pos_y, cursor_pos_x);
-        fbputchar(' ', cursor_pos_y, cursor_pos_x);
         continue;
       }
 
@@ -177,6 +179,17 @@ int main()
         for(col = 0; col < 64; col++){
           fbputchar(' ', 22, col);
           fbputchar(' ', 23, col);
+        }
+      }
+      
+      // SPACEBAR
+      if(packet.keycode[0] == 0x2C){
+        if(strlen(input_buffer) < BUFFER_SIZE - 1){
+          input_buffer[strlen(input_buffer)] = ' ';
+          fbputchar(' ', cursor_pos_y, cursor_pos_x);
+          cursor_pos_x = (cursor_pos_x + 1) % 64;
+          cursor_pos_y = cursor_pos_y + (cursor_pos_x == 0);
+          fbcursor(cursor_pos_y, cursor_pos_x);
         }
       }
 
