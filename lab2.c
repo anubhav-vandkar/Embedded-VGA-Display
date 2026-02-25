@@ -113,80 +113,78 @@ int main()
 
     fbcursor(cursor_pos_y, cursor_pos_x);
     if (transferred == sizeof(packet)) {
-
-
+      
       sprintf(keystate, "%02x %02x %02x", packet.modifiers, packet.keycode[0], packet.keycode[1]);
       printf("Pressed key: %s\n", keystate);
-      fbputs(keystate, 6, 0);
+      fbputs(keystate, 0, 35);
 
-      if((packet.modifiers & USB_LSHIFT) || (packet.modifiers & USB_RSHIFT)){ 
 
         //SHIFT Pressed
-        if(packet.keycode[0] >= 0x04 && packet.keycode[0] <= 0x1D){ /* a-z */
+      if(packet.keycode[0] >= 0x04 && packet.keycode[0] <= 0x1D){ /* a-z */
+        if((packet.modifiers & USB_LSHIFT) || (packet.modifiers & USB_RSHIFT))
           packet.keycode[0] += 0x1D;
 
-          if(strlen(input_buffer) < BUFFER_SIZE - 1){
-            input_buffer[strlen(input_buffer)] = packet.keycode[0];
-            fbputchar(packet.keycode[0], cursor_pos_y, cursor_pos_x);
-            cursor_pos_x = (cursor_pos_x + 1) % 64;
-            cursor_pos_y = cursor_pos_y + (cursor_pos_x == 0);
-            fbcursor(cursor_pos_y, cursor_pos_x);
-          }
-        }
-        if(packet.keycode[1] >= 0x04 && packet.keycode[1] <= 0x1D){ /* a-z */
-          packet.keycode[1] += 0x1D;
-
-          if(strlen(input_buffer) < BUFFER_SIZE - 1){
-            input_buffer[strlen(input_buffer)] = packet.keycode[1];
-            fbputchar(packet.keycode[1], cursor_pos_y, cursor_pos_x);
-            cursor_pos_x = (cursor_pos_x + 1) % 64;
-            cursor_pos_y = cursor_pos_y + (cursor_pos_x == 0);
-            fbcursor(cursor_pos_y, cursor_pos_x);
-          }
-        }
-
-        // BACKSPACE
-        if(packet.keycode[0] == 0x2A){
-          if(cursor_pos_x > 0){
-            cursor_pos_x--;
-          }
-          else if(cursor_pos_y == 23){
-            cursor_pos_y--;
-            cursor_pos_x = 63;
-          }
-          input_buffer[strlen(input_buffer) - 1] = '\0';
+        if(strlen(input_buffer) < BUFFER_SIZE - 1){
+          input_buffer[strlen(input_buffer)] = packet.keycode[0];
+          fbputchar(packet.keycode[0], cursor_pos_y, cursor_pos_x);
+          cursor_pos_x = (cursor_pos_x + 1) % 64;
+          cursor_pos_y = cursor_pos_y + (cursor_pos_x == 0);
           fbcursor(cursor_pos_y, cursor_pos_x);
-          fbputchar(' ', cursor_pos_y, cursor_pos_x);
-          continue;
         }
+      }
+      if(packet.keycode[1] >= 0x04 && packet.keycode[1] <= 0x1D){ /* a-z */
+        packet.keycode[1] += 0x1D;
 
-        // ENTER 
-        if(packet.keycode[0] == 0x28 && !(cursor_pos_x == 0 && cursor_pos_y == 22)) {
-          write(sockfd, input_buffer, cursor_pos_x + (cursor_pos_y - 22) * 64);
-
-          // LOCK SCREEN BUFFER
-          pthread_mutex_lock(&screen_buffer_mutex);
-          screen_shift(screen_buffer, input_buffer);
-          // UNLOCK SCREEN BUFFER
-          pthread_mutex_unlock(&screen_buffer_mutex);
-
-          cursor_pos_x = 0;
-          cursor_pos_y = 22;
+        if(strlen(input_buffer) < BUFFER_SIZE - 1){
+          input_buffer[strlen(input_buffer)] = packet.keycode[1];
+          fbputchar(packet.keycode[1], cursor_pos_y, cursor_pos_x);
+          cursor_pos_x = (cursor_pos_x + 1) % 64;
+          cursor_pos_y = cursor_pos_y + (cursor_pos_x == 0);
           fbcursor(cursor_pos_y, cursor_pos_x);
-          memset(input_buffer, 0, BUFFER_SIZE);
-
-          for(col = 0; col < 64; col++){
-            fbputchar(' ', 22, col);
-            fbputchar(' ', 23, col);
-          }
         }
+      }
 
-        // ESCAPE
-        if (packet.keycode[0] == 0x29) {
-          memset(input_buffer, 0, BUFFER_SIZE);
-          memset(screen_buffer, 0, sizeof(screen_buffer));
-          break;
+      // BACKSPACE
+      if(packet.keycode[0] == 0x2A){
+        if(cursor_pos_x > 0){
+          cursor_pos_x--;
         }
+        else if(cursor_pos_y == 23){
+          cursor_pos_y--;
+          cursor_pos_x = 63;
+        }
+        input_buffer[strlen(input_buffer) - 1] = '\0';
+        fbcursor(cursor_pos_y, cursor_pos_x);
+        fbputchar(' ', cursor_pos_y, cursor_pos_x);
+        continue;
+      }
+
+      // ENTER 
+      if(packet.keycode[0] == 0x28 && (strlen(input_buffer) != 0)){
+        write(sockfd, input_buffer, cursor_pos_x + (cursor_pos_y - 22) * 64);
+
+        // LOCK SCREEN BUFFER
+        pthread_mutex_lock(&screen_buffer_mutex);
+        screen_shift(screen_buffer, input_buffer);
+        // UNLOCK SCREEN BUFFER
+        pthread_mutex_unlock(&screen_buffer_mutex);
+
+        cursor_pos_x = 0;
+        cursor_pos_y = 22;
+        fbcursor(cursor_pos_y, cursor_pos_x);
+        memset(input_buffer, 0, BUFFER_SIZE);
+
+        for(col = 0; col < 64; col++){
+          fbputchar(' ', 22, col);
+          fbputchar(' ', 23, col);
+        }
+      }
+
+      // ESCAPE
+      if (packet.keycode[0] == 0x29) {
+        memset(input_buffer, 0, BUFFER_SIZE);
+        memset(screen_buffer, 0, sizeof(screen_buffer));
+        break;
       }
     }
   }
@@ -211,10 +209,10 @@ void *network_thread_f(void *ignored)
     //fbputs(recvBuf, 8, 0);
 
     // LOCK SCREEN BUFFER
-    //pthread_mutex_lock(&screen_buffer_mutex);
+    pthread_mutex_lock(&screen_buffer_mutex);
     screen_shift(screen_buffer, recvBuf);
     // UNLOCK SCREEN BUFFER
-    //pthread_mutex_unlock(&screen_buffer_mutex);
+    pthread_mutex_unlock(&screen_buffer_mutex);
   }
   return NULL;
 }
