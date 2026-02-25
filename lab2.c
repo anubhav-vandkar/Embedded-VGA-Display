@@ -55,7 +55,7 @@ int main()
   char keystate[12];
 
   char input_buffer[BUFFER_SIZE];
-  memset(input_buffer, 0, sizeof(input_buffer));
+  memset(input_buffer, ' ', sizeof(input_buffer));
 
   for(int i = 0; i < 20; i++){
     memset(screen_buffer[i], ' ', sizeof(screen_buffer[i]));
@@ -169,12 +169,12 @@ int main()
 
       // ENTER 
       if(packet.keycode[0] == 0x28 && (strlen(input_buffer) != 0)){
-        write(sockfd, input_buffer, cursor_pos_x + (cursor_pos_y - 22) * 64);
+        write(sockfd, input_buffer, strlen(input_buffer));
 
         cursor_pos_x = 0;
         cursor_pos_y = 22;
         fbcursor(cursor_pos_y, cursor_pos_x);
-        memset(input_buffer, 0, BUFFER_SIZE);
+        memset(input_buffer, ' ', BUFFER_SIZE);
 
         for(col = 0; col < 64; col++){
           fbputchar(' ', 22, col);
