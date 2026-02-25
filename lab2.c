@@ -58,6 +58,9 @@ int main()
   memset(input_buffer, 0, sizeof(input_buffer));
 
   memset(screen_buffer, 0, sizeof(screen_buffer));
+  for(int i=0; i < 20; i++){
+    fbputs(screen_buffer[0], i+1, 0);
+  }
 
   int cursor_pos_x = 0;
   int cursor_pos_y = 22;
@@ -187,6 +190,9 @@ int main()
       if (packet.keycode[0] == 0x29) {
         memset(input_buffer, 0, BUFFER_SIZE);
         memset(screen_buffer, 0, sizeof(screen_buffer));
+        for(int i=0; i < 20; i++){
+          fbputs(screen_buffer[0], i+1, 0);
+        }
         break;
       }
     }
