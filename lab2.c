@@ -181,7 +181,7 @@ int main()
           fbputchar(' ', 23, col);
         }
       }
-      
+
       // SPACEBAR
       if(packet.keycode[0] == 0x2C){
         if(strlen(input_buffer) < BUFFER_SIZE - 1){
@@ -219,7 +219,7 @@ void *network_thread_f(void *ignored)
   char recvBuf[BUFFER_SIZE];
   int n;
   /* Receive data */
-  memset(recvBuf, 0, sizeof(recvBuf));
+  memset(recvBuf, ' ', sizeof(recvBuf));
   while ((n = read(sockfd, &recvBuf, BUFFER_SIZE - 1)) > 0 ) {
     recvBuf[n] = '\0';
     printf("Received: %s\n", recvBuf);
