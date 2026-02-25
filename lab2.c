@@ -148,15 +148,13 @@ int main()
         cursor_pos_x = 22;
         cursor_pos_y = 0;
       } else {
-        char c = (packet.modifiers & USB_LSHIFT) || (packet.modifiers & USB_RSHIFT) ?
-                  usb_to_ascii_shift[packet.keycode[1]]: usb_to_ascii[packet.keycode[1]];
+        char c = (packet.modifiers & USB_LSHIFT) || (packet.modifiers & USB_RSHIFT) ? usb_to_ascii_shift[packet.keycode[1]]: usb_to_ascii[packet.keycode[1]];
         fbputchar(c, cursor_pos_y, cursor_pos_x);
         input_buffer[cursor_pos_x] = c;
         cursor_pos_x = (cursor_pos_x + 1) % 64;
         cursor_pos_y = (cursor_pos_x / 64);
 
-        c = (packet.modifiers & USB_LSHIFT) || (packet.modifiers & USB_RSHIFT) ?
-                  usb_to_ascii_shift[packet.keycode[2]]: usb_to_ascii[packet.keycode[2]];
+        c = (packet.modifiers & USB_LSHIFT) || (packet.modifiers & USB_RSHIFT) ? usb_to_ascii_shift[packet.keycode[2]]: usb_to_ascii[packet.keycode[2]];
         fbputchar(c, cursor_pos_y, cursor_pos_x);
         input_buffer[cursor_pos_x] = c;
         cursor_pos_x = (cursor_pos_x + 1) % 64;
