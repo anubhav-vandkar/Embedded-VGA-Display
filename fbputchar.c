@@ -156,7 +156,7 @@ void shift_text_left(int pos, char * input_buffer){
   for(int i = pos; i < len - 1; i++){
     input_buffer[i] = input_buffer[i+1];
   }
-  input_buffer[len-1] = '\0';
+  input_buffer[len-1] = ' ';
 }
 
 static unsigned char font[] = {

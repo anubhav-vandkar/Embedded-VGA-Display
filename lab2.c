@@ -244,30 +244,43 @@ int main()
       }else if (packet.keycode[0] == 0x2a) {
         // BACKSPACE
         if(cursor_pos_x > 0){
+          cursor_pos_y = 22 + (cursor_pos_x - 1) / 64;
           cursor_pos_x = (cursor_pos_x - 1) % 64;
-          cursor_pos_y = (cursor_pos_x / 64);
-          int pos = (cursor_pos_x-22) + cursor_pos_y%64;
+          int pos = cursor_pos_x + (cursor_pos_y - 22) * 64;
           shift_text_left(pos, input_buffer);
         }
-      } else if (packet.keycode[0] == 0x28) {
+      }else if (packet.keycode[0] == 0x28) {
         // ENTER
         input_buffer[cursor_pos_x] = '\n';
         write(sockfd, input_buffer, strlen(input_buffer));
         memset(input_buffer, ' ', BUFFER_SIZE);
-        cursor_pos_x = 22;
-        cursor_pos_y = 0;
-      } else {
+        cursor_pos_y = 22;
+        cursor_pos_x = 0;
+      }else if(packet.keycode[0] == 0x50 || packet.keycode[0] == 0x4f){ 
+        //left and right arrow keys
+        if(packet.keycode[0] == 0x50){ //left arrow
+          if(cursor_pos_x > 0){
+            cursor_pos_y = 22 + (cursor_pos_x - 1) / 64;
+            cursor_pos_x = (cursor_pos_x - 1) % 64;
+          }
+        }else if(packet.keycode[0] == 0x4f){ //right arrow
+          if(cursor_pos_x < BUFFER_SIZE){
+            cursor_pos_y = 22 + (cursor_pos_x + 1) / 64;
+            cursor_pos_x = (cursor_pos_x + 1) % 64;
+          }
+        }
+      } 
+      else {
         char c = (packet.modifiers & USB_LSHIFT) || (packet.modifiers & USB_RSHIFT) ? usb_to_ascii_shift[packet.keycode[1]]: usb_to_ascii[packet.keycode[1]];
-        fbputchar(c, cursor_pos_y, cursor_pos_x);
         input_buffer[cursor_pos_x] = c;
+        cursor_pos_y = 22 + (cursor_pos_x + 1)/64;
         cursor_pos_x = (cursor_pos_x + 1) % 64;
-        cursor_pos_y = (cursor_pos_x / 64);
 
         c = (packet.modifiers & USB_LSHIFT) || (packet.modifiers & USB_RSHIFT) ? usb_to_ascii_shift[packet.keycode[2]]: usb_to_ascii[packet.keycode[2]];
-        fbputchar(c, cursor_pos_y, cursor_pos_x);
+        fbputchar(c, cursor_pos_x, cursor_pos_y);
         input_buffer[cursor_pos_x] = c;
+        cursor_pos_y = 22 + (cursor_pos_x + 1)/64;
         cursor_pos_x = (cursor_pos_x + 1) % 64;
-        cursor_pos_y = (cursor_pos_x / 64);
       }
     }
     usleep(10000);
