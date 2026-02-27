@@ -254,15 +254,10 @@ int main()
         break;
       }else if (packet.keycode[0] == 0x2a) {
         // BACKSPACE
-        if(cursor_pos_x != 0 && cursor_pos_y == 22 ){
+        if(cursor_pos_x > 0 || cursor_pos_y > 22){
+          cursor_pos_y = cursor_pos_y + (cursor_pos_x - 1) / 64;
           cursor_pos_x = (64 + cursor_pos_x - 1) % 64;
-          int pos = cursor_pos_x + (cursor_pos_y - 22) * 64;
-          shift_text_left(pos, input_buffer);
-        } else if (cursor_pos_y == 23) {
-          cursor_pos_y = cursor_pos_x ? 22 : 23;
-          cursor_pos_x = (64 + cursor_pos_x - 1) % 64;
-          int pos = cursor_pos_x + (cursor_pos_y - 22) * 64;
-          shift_text_left(pos, input_buffer);
+          shift_text_left(cursor_pos_x + (cursor_pos_y - 22) * 64, input_buffer);
         }
       }else if (packet.keycode[0] == 0x28) {
         // ENTER
