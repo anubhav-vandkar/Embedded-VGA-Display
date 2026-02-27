@@ -293,6 +293,9 @@ int main()
         cursor_pos_y = 22 + (cursor_pos_x + 1)/64;
         cursor_pos_x = (cursor_pos_x + 1) % 64;
 
+        if(packet.keycode[1] == 0x00) 
+          continue; // ignore if not pressed
+
         c = (packet.modifiers & USB_LSHIFT) || (packet.modifiers & USB_RSHIFT) ? usb_to_ascii_shift[packet.keycode[1]]: usb_to_ascii[packet.keycode[1]];
         printf("Pressed key: %c\n", c);
         fbputchar(c, cursor_pos_y, cursor_pos_x);
