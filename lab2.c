@@ -166,13 +166,6 @@ int main()
   char input_buffer[BUFFER_SIZE];
   memset(input_buffer, ' ', sizeof(input_buffer));
 
-  
-  for(int i = 0; i < 20; i++){
-    for(int j = 0; j < 64; j++){
-      screen_buffer[i][j] = ' ';
-    }
-  }
-
   int cursor_pos_x = 0;
   int cursor_pos_y = 22;
 
@@ -181,12 +174,21 @@ int main()
     exit(1);
   }
 
-  /* Clear screen */
-  for(int i=0; i < 20; i++){
-    fbputs(screen_buffer[i], i+1, 0);
+  fbputs("Welcome to the CSEE 4840 Chat!", 0, 1);
+
+  for(int i = 0; i < 20; i++){
+    for(int j = 0; j < 64; j++){
+      screen_buffer[i][j] = ' ';
+      fbputchar(' ', i, j);
+    }
   }
 
-  fbputs("Welcome to the CSEE 4840 Chat!", 0, 1);
+  for(int i = 0; i < 64; i++){
+    input_buffer[i] = ' ';
+    input_buffer[i + 64] = ' ';
+    fbputchar(' ', 22, i);
+    fbputchar(' ', 23, i);
+  }
   
   for (col = 0 ; col < 64 ; col++) {
     fbputchar('*', 21, col);
@@ -286,7 +288,7 @@ int main()
         }
       } 
       else {
-        if(packet.keycode[0] == 0x00 || (cursor_pos_x + (cursor_pos_y - 22) * 64 >= BUFFER_SIZE))
+        if(packet.keycode[0] == 0x00 || (cursor_pos_y == 23 && cursor_pos_x == 63))
           continue; // ignore if buffer is full
         
         char c = (packet.modifiers & USB_LSHIFT) || (packet.modifiers & USB_RSHIFT) ? usb_to_ascii_shift[packet.keycode[0]]: usb_to_ascii[packet.keycode[0]];
