@@ -265,7 +265,8 @@ int main()
         memset(input_buffer, ' ', BUFFER_SIZE);
         cursor_pos_y = 22;
         cursor_pos_x = 0;
-      }else if(packet.keycode[0] == 0x50 || packet.keycode[0] == 0x4f){ 
+      }else if(packet.keycode[0] >= 0x4f && packet.keycode[0] <= 0x52){ 
+        fbputchar(input_buffer[cursor_pos_x + (cursor_pos_y - 22) * 64], cursor_pos_y, cursor_pos_x);
         //left and right arrow keys
         if(packet.keycode[0] == 0x50){ //left arrow
           if(cursor_pos_x > 0 || cursor_pos_y > 22){
@@ -277,14 +278,12 @@ int main()
             cursor_pos_y = cursor_pos_y + (cursor_pos_x + 1)/64;
             cursor_pos_x = (cursor_pos_x + 1) % 64;
           }
-        }else if(packet.keycode[0] == 0x48 || packet.keycode[0] == 0x50){ 
-          if(packet.keycode[0] == 0x48){ //up arrow
-            if(cursor_pos_y > 22)
-              cursor_pos_y--;
-          }else if(packet.keycode[0] == 0x50){ //down arrow
-            if(cursor_pos_y < 23)
-              cursor_pos_y++;
-          }
+        }else if(packet.keycode[0] == 0x52){ 
+          if(cursor_pos_y > 22)
+            cursor_pos_y++;
+        }else if(packet.keycode[0] == 0x51){
+          if(cursor_pos_y < 23)
+            cursor_pos_y--;
         }
       } 
       else {
