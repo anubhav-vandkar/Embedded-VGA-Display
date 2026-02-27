@@ -280,10 +280,10 @@ int main()
             cursor_pos_x = (cursor_pos_x + 1) % 64;
           }
         }else if(packet.keycode[0] == 0x52){ 
-          if(cursor_pos_y > 22)
+          if(cursor_pos_y == 22)
             cursor_pos_y++;
         }else if(packet.keycode[0] == 0x51){
-          if(cursor_pos_y < 23)
+          if(cursor_pos_y == 23)
             cursor_pos_y--;
         }
       } 
