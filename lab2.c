@@ -166,13 +166,12 @@ int main()
   char input_buffer[BUFFER_SIZE];
   memset(input_buffer, ' ', sizeof(input_buffer));
 
-  for(int i = 0; i < 64; i++){
-    memset(screen_buffer[0][i], ' ', sizeof(char));
+  
+  for(int i = 0; i < 20; i++){
+    for(int j = 0; j < 64; j++){
+      screen_buffer[i][j] = ' ';
+    }
   }
-
-  for(int i = 1; i < 20; i++){
-    memset(screen_buffer[i], screen_buffer[0], sizeof(screen_buffer[0]));
-  } 
 
   int cursor_pos_x = 0;
   int cursor_pos_y = 22;
