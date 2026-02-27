@@ -190,7 +190,7 @@ int main()
     fprintf(stderr, "Error: Could not open framebuffer: %d\n", err);
     exit(1);
   }
-  
+
   clear_input_box();
   clear_screen();
 
@@ -314,7 +314,6 @@ int main()
         cursor_pos_x = (cursor_pos_x + 1) % 64;
       }
     }
-    usleep(100000);
   }
 
   /* Terminate the network thread */
