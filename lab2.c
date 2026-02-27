@@ -152,6 +152,24 @@ void *network_thread_f(void *);
 pthread_mutex_t screen_buffer_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 char screen_buffer[20][64];
+char input_buffer[BUFFER_SIZE];
+
+void clear_input_box(){
+  memset(input_buffer, ' ', BUFFER_SIZE);
+  for(int i = 0; i < 64; i++){
+    fbputchar(' ', 22, i);
+    fbputchar(' ', 23, i);
+  }
+}
+
+void clear_screen(){
+  for(int i = 0; i < 20; i++){
+    for(int j = 0; j < 64; j++){
+      screen_buffer[i][j] = ' ';
+      fbputchar(' ', i, j);
+    }
+  }
+}
 
 int main()
 {
@@ -163,7 +181,6 @@ int main()
   int transferred;
   char keystate[12];
 
-  char input_buffer[BUFFER_SIZE];
   memset(input_buffer, ' ', sizeof(input_buffer));
 
   int cursor_pos_x = 0;
@@ -173,23 +190,12 @@ int main()
     fprintf(stderr, "Error: Could not open framebuffer: %d\n", err);
     exit(1);
   }
+  
+  clear_input_box();
+  clear_screen();
 
   fbputs("Welcome to the CSEE 4840 Chat!", 0, 1);
 
-  for(int i = 0; i < 20; i++){
-    for(int j = 0; j < 64; j++){
-      screen_buffer[i][j] = ' ';
-      fbputchar(' ', i, j);
-    }
-  }
-
-  for(int i = 0; i < 64; i++){
-    input_buffer[i] = ' ';
-    input_buffer[i + 64] = ' ';
-    fbputchar(' ', 22, i);
-    fbputchar(' ', 23, i);
-  }
-  
   for (col = 0 ; col < 64 ; col++) {
     fbputchar('*', 21, col);
   }
@@ -262,9 +268,9 @@ int main()
         // ENTER
         input_buffer[cursor_pos_x] = '\n';
         write(sockfd, input_buffer, strlen(input_buffer));
-        memset(input_buffer, ' ', BUFFER_SIZE);
         cursor_pos_y = 22;
         cursor_pos_x = 0;
+        clear_input_box();
       }else if(packet.keycode[0] >= 0x4f && packet.keycode[0] <= 0x52){ 
         fbputchar(input_buffer[cursor_pos_x + (cursor_pos_y - 22) * 64], cursor_pos_y, cursor_pos_x);
         //left and right arrow keys
@@ -308,7 +314,7 @@ int main()
         cursor_pos_x = (cursor_pos_x + 1) % 64;
       }
     }
-    usleep(10000);
+    usleep(100000);
   }
 
   /* Terminate the network thread */
