@@ -154,13 +154,12 @@ void fbcursor(int row, int col, char *input_buffer){
 }
 
 void shift_text_left(int pos, char * input_buffer){
-  int len = strlen(input_buffer);
-  for(int i = pos; i < len - 1; i++){
+  for(int i = pos; i < 127; i++){
     input_buffer[i] = input_buffer[i+1];
     fbputchar(input_buffer[i], 22 + i / 64, i % 64);
   }
-  input_buffer[len-1] = ' ';
-  fbputchar(' ', 22 + (len-1) / 64, (len-1) % 64);
+  input_buffer[127] = ' ';
+  fbputchar(' ', 23, 63);
 }
 
 static unsigned char font[] = {
