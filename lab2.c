@@ -286,7 +286,7 @@ int main()
         }
       } 
       else {
-        if(packet.keycode[1] == 0x00 || (cursor_pos_x + (cursor_pos_y - 22) * 64 >= BUFFER_SIZE))
+        if(packet.keycode[0] == 0x00 || (cursor_pos_x + (cursor_pos_y - 22) * 64 >= BUFFER_SIZE))
           continue; // ignore if buffer is full
         
         char c = (packet.modifiers & USB_LSHIFT) || (packet.modifiers & USB_RSHIFT) ? usb_to_ascii_shift[packet.keycode[0]]: usb_to_ascii[packet.keycode[0]];
