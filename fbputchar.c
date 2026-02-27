@@ -140,6 +140,8 @@ void screen_shift(char screen_buffer[20][64], char *new_content){
     strcpy(screen_buffer[i], new_content + (i - (20 - new_rows)) * 64);
     fbputs((const char *)screen_buffer[i], i+1, 0);
   }
+
+  printf("Screen updated with new content: %s\n", new_content);
 }
 
 void fbcursor(int row, int col, char *input_buffer){

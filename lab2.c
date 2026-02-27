@@ -331,11 +331,8 @@ void *network_thread_f(void *ignored)
     printf("Received: %s\n", recvBuf);
     //fbputs(recvBuf, 8, 0);
 
-    // LOCK SCREEN BUFFER
-    pthread_mutex_lock(&screen_buffer_mutex);
     screen_shift(screen_buffer, recvBuf);
-    // UNLOCK SCREEN BUFFER
-    pthread_mutex_unlock(&screen_buffer_mutex);
+
   }
   return NULL;
 }
