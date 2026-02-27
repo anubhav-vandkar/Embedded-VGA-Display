@@ -255,7 +255,7 @@ int main()
       }else if (packet.keycode[0] == 0x2a) {
         // BACKSPACE
         if(cursor_pos_x > 0 || cursor_pos_y > 22){
-          cursor_pos_y = cursor_pos_y + (cursor_pos_x - 1) / 64;
+          cursor_pos_y -= (cursor_pos_y > 22 && cursor_pos_x == 0) ? 1 : 0;
           cursor_pos_x = (64 + cursor_pos_x - 1) % 64;
           shift_text_left(cursor_pos_x + (cursor_pos_y - 22) * 64, input_buffer);
         }
@@ -271,7 +271,7 @@ int main()
         //left and right arrow keys
         if(packet.keycode[0] == 0x50){ //left arrow
           if(cursor_pos_x > 0 || cursor_pos_y > 22){
-            cursor_pos_y = cursor_pos_y + (cursor_pos_x - 1) / 64;
+            cursor_pos_y -= (cursor_pos_y > 22 && cursor_pos_x == 0) ? 1 : 0;
             cursor_pos_x = (64 + cursor_pos_x - 1) % 64;
           }
         }else if(packet.keycode[0] == 0x4f){ //right arrow
