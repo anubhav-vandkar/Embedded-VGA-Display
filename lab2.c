@@ -268,13 +268,13 @@ int main()
       }else if(packet.keycode[0] == 0x50 || packet.keycode[0] == 0x4f){ 
         //left and right arrow keys
         if(packet.keycode[0] == 0x50){ //left arrow
-          if(cursor_pos_x > 0){
-            cursor_pos_y = 22 + (cursor_pos_x - 1) / 64;
-            cursor_pos_x = (cursor_pos_x - 1) % 64;
+          if(cursor_pos_x > 0 || cursor_pos_y > 22){
+            cursor_pos_y = cursor_pos_y + (cursor_pos_x - 1) / 64;
+            cursor_pos_x = (64 + cursor_pos_x - 1) % 64;
           }
         }else if(packet.keycode[0] == 0x4f){ //right arrow
-          if(cursor_pos_x < BUFFER_SIZE){
-            cursor_pos_y = 22 + (cursor_pos_x + 1) / 64;
+          if(cursor_pos_x < 63 || cursor_pos_y < 23){
+            cursor_pos_y = cursor_pos_y + (cursor_pos_x + 1)/64;
             cursor_pos_x = (cursor_pos_x + 1) % 64;
           }
         }else if(packet.keycode[0] == 0x48 || packet.keycode[0] == 0x50){ 

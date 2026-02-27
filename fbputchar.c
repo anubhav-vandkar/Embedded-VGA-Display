@@ -144,7 +144,7 @@ void screen_shift(char screen_buffer[20][64], char *new_content){
 
 void fbcursor(int row, int col, char *input_buffer){
   for(int i = 0; i < strlen(input_buffer); i++){
-    if(i == (row-22) + col%64)
+    if(i == (row-22) * 64 + col)
       fbputchar(input_buffer[i], row, col);
     else
       fbputchar('_', row, col);
@@ -155,8 +155,10 @@ void shift_text_left(int pos, char * input_buffer){
   int len = strlen(input_buffer);
   for(int i = pos; i < len - 1; i++){
     input_buffer[i] = input_buffer[i+1];
+    fbputchar(input_buffer[i], 22 + i / 64, i % 64);
   }
   input_buffer[len-1] = ' ';
+  fbputchar(' ', 22 + (len-1) / 64, (len-1) % 64);
 }
 
 static unsigned char font[] = {
