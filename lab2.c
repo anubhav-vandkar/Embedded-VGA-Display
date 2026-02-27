@@ -164,10 +164,14 @@ int main()
   char keystate[12];
 
   char input_buffer[BUFFER_SIZE];
-  memset(input_buffer, 0, sizeof(input_buffer));
+  memset(input_buffer, ' ', sizeof(input_buffer));
 
-  for(int i = 0; i < 20; i++){
-    memset(screen_buffer[i], ' ', sizeof(screen_buffer[i]));
+  for(int i = 0; i < 64; i++){
+    memset(screen_buffer[0][i], ' ', sizeof(screen_buffer[0][i]));
+  }
+
+  for(int i = 1; i < 20; i++){
+    memset(screen_buffer[i], screen_buffer[0], sizeof(screen_buffer[i]));
   } 
 
   int cursor_pos_x = 0;
@@ -286,14 +290,14 @@ int main()
         char c = (packet.modifiers & USB_LSHIFT) || (packet.modifiers & USB_RSHIFT) ? usb_to_ascii_shift[packet.keycode[0]]: usb_to_ascii[packet.keycode[0]];
         printf("Pressed key: %c\n", c);
         fbputchar(c, cursor_pos_y, cursor_pos_x);
-        input_buffer[cursor_pos_x] = c;
+        input_buffer[cursor_pos_x + (cursor_pos_y - 22) * 64] = c;
         cursor_pos_y = 22 + (cursor_pos_x + 1)/64;
         cursor_pos_x = (cursor_pos_x + 1) % 64;
 
         c = (packet.modifiers & USB_LSHIFT) || (packet.modifiers & USB_RSHIFT) ? usb_to_ascii_shift[packet.keycode[1]]: usb_to_ascii[packet.keycode[1]];
         printf("Pressed key: %c\n", c);
         fbputchar(c, cursor_pos_y, cursor_pos_x);
-        input_buffer[cursor_pos_x] = c;
+        input_buffer[cursor_pos_x + (cursor_pos_y - 22) * 64] = c;
         cursor_pos_y = 22 + (cursor_pos_x + 1)/64;
         cursor_pos_x = (cursor_pos_x + 1) % 64;
       }
