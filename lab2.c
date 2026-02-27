@@ -243,9 +243,13 @@ int main()
         break;
       }else if (packet.keycode[0] == 0x2a) {
         // BACKSPACE
-        if(cursor_pos_x > 0){
-          cursor_pos_y = 22 + (cursor_pos_x - 1) / 64;
-          cursor_pos_x = (cursor_pos_x - 1) % 64;
+        if(cursor_pos_x != 0 && cursor_pos_y == 22 ){
+          cursor_pos_x = (64 + cursor_pos_x - 1) % 64;
+          int pos = cursor_pos_x + (cursor_pos_y - 22) * 64;
+          shift_text_left(pos, input_buffer);
+        } else if (cursor_pos_y == 23) {
+          cursor_pos_y = cursor_pos_x ? 22 : 23;
+          cursor_pos_x = (64 + cursor_pos_x - 1) % 64;
           int pos = cursor_pos_x + (cursor_pos_y - 22) * 64;
           shift_text_left(pos, input_buffer);
         }
@@ -268,16 +272,25 @@ int main()
             cursor_pos_y = 22 + (cursor_pos_x + 1) / 64;
             cursor_pos_x = (cursor_pos_x + 1) % 64;
           }
+        }else if(packet.keycode[0] == 0x48 || packet.keycode[0] == 0x50){ 
+          if(packet.keycode[0] == 0x48){ //up arrow
+            if(cursor_pos_y > 22)
+              cursor_pos_y--;
+          }else if(packet.keycode[0] == 0x50){ //down arrow
+            if(cursor_pos_y < 23)
+              cursor_pos_y++;
+          }
         }
       } 
       else {
         char c = (packet.modifiers & USB_LSHIFT) || (packet.modifiers & USB_RSHIFT) ? usb_to_ascii_shift[packet.keycode[1]]: usb_to_ascii[packet.keycode[1]];
+        fbputchar(c, cursor_pos_y, cursor_pos_x);
         input_buffer[cursor_pos_x] = c;
         cursor_pos_y = 22 + (cursor_pos_x + 1)/64;
         cursor_pos_x = (cursor_pos_x + 1) % 64;
 
         c = (packet.modifiers & USB_LSHIFT) || (packet.modifiers & USB_RSHIFT) ? usb_to_ascii_shift[packet.keycode[2]]: usb_to_ascii[packet.keycode[2]];
-        fbputchar(c, cursor_pos_x, cursor_pos_y);
+        fbputchar(c, cursor_pos_y, cursor_pos_x);
         input_buffer[cursor_pos_x] = c;
         cursor_pos_y = 22 + (cursor_pos_x + 1)/64;
         cursor_pos_x = (cursor_pos_x + 1) % 64;
