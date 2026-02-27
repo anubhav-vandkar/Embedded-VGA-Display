@@ -325,13 +325,17 @@ void *network_thread_f(void *ignored)
   char recvBuf[BUFFER_SIZE];
   int n;
   /* Receive data */
-  memset(recvBuf, ' ', sizeof(recvBuf));
+  memset(recvBuf, 0, sizeof(recvBuf));
   while ((n = read(sockfd, &recvBuf, BUFFER_SIZE - 1)) > 0 ) {
     recvBuf[n] = '\0';
     printf("Received: %s\n", recvBuf);
     //fbputs(recvBuf, 8, 0);
 
+    // Lock the screen buffer mutex before updating the screen buffer
+    pthread_mutex_lock(&screen_buffer_mutex);
     screen_shift(screen_buffer, recvBuf);
+    // Unlock the screen buffer mutex after updating the screen buffer  
+    pthread_mutex_unlock(&screen_buffer_mutex);
 
   }
   return NULL;
