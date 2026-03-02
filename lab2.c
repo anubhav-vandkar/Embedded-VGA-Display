@@ -155,7 +155,7 @@ char screen_buffer[20][64];
 char input_buffer[BUFFER_SIZE];
 
 void clear_input_box(){
-  memset(input_buffer, ' ', BUFFER_SIZE);
+  memset(input_buffer, 0, strlen(input_buffer));
   for(int i = 0; i < 64; i++){
     fbputchar(' ', 22, i);
     fbputchar(' ', 23, i);
@@ -165,7 +165,7 @@ void clear_input_box(){
 void clear_screen(){
   for(int i = 0; i < 20; i++){
     for(int j = 0; j < 64; j++){
-      screen_buffer[i][j] = ' ';
+      screen_buffer[i][j] = 0;
       fbputchar(' ', i, j);
     }
   }
@@ -246,7 +246,7 @@ int main()
       //Handle only escape and call function
       // ESCAPE
       if (packet.keycode[0] == 0x29) {
-        memset(input_buffer, 0, BUFFER_SIZE);
+        memset(input_buffer, 0, strlen(input_buffer));
         memset(screen_buffer, 0, sizeof(screen_buffer));
         for(int i=0; i < 20; i++){
           fbputs(screen_buffer[i], i+1, 0);

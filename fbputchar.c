@@ -135,7 +135,7 @@ void screen_shift(char screen_buffer[20][64], char *new_content){
 
   // add new content to the bottom of the screen
   for(; i < 20; i++){
-    memset(screen_buffer[i], ' ', sizeof(screen_buffer[i]));
+    //memset(screen_buffer[i], ' ', sizeof(screen_buffer[i]));
     strcpy(screen_buffer[i], new_content + (i - (20 - new_rows)) * 64);
     // fill the rest with spaces
     for(int j = strlen(screen_buffer[i]); j < 64; j++){
