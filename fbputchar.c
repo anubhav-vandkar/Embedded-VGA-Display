@@ -168,7 +168,7 @@ void shift_text_left(int pos, char * input_buffer){
       fbputchar(input_buffer[i], 22 + i / 64, i % 64);
     }
   }
-  input_buffer[127] = '\0';
+  //input_buffer[127] = '\0';
   fbputchar(' ', 23, 63);
 }
 
