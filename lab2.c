@@ -254,11 +254,13 @@ int main()
         break;
       }else if (packet.keycode[0] == 0x2a || packet.keycode[0] == 0x4c) {
         // BACKSPACE and delete
-        if(cursor_pos_x > 0 || cursor_pos_y > 22){
-          cursor_pos_y -= (cursor_pos_y > 22 && cursor_pos_x == 0) ? 1 : 0;
-          cursor_pos_x = (64 + cursor_pos_x - 1) % 64;
-          shift_text_left(cursor_pos_x + (cursor_pos_y - 22) * 64, input_buffer);
+        if(packet.keycode[0] == 0x2a){
+          if(cursor_pos_x > 0 || cursor_pos_y > 22){
+            cursor_pos_y -= (cursor_pos_y > 22 && cursor_pos_x == 0) ? 1 : 0;
+            cursor_pos_x = (64 + cursor_pos_x - 1) % 64;
+          }
         }
+        shift_text_left(cursor_pos_x + (cursor_pos_y - 22) * 64, input_buffer);
       }else if (packet.keycode[0] == 0x28) {
         // ENTER
         input_buffer[cursor_pos_x + (cursor_pos_y - 22) * 64] = '\n';
