@@ -151,7 +151,7 @@ void fbcursor(int row, int col, char *input_buffer){
     if(i != (row-22) * 64 + col)
       fbputchar(input_buffer[i], row, col);
     else{
-      if(i == strlen(input_buffer))
+      if(i == strlen(input_buffer)-1)
         fbputchar(' ', row, col);
       else
         fbputchar('_', row, col);
