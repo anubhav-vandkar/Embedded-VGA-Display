@@ -148,10 +148,14 @@ void screen_shift(char screen_buffer[20][64], char *new_content){
 
 void fbcursor(int row, int col, char *input_buffer){
   for(int i = 0; i < strlen(input_buffer); i++){
-    if(i == (row-22) * 64 + col)
+    if(i == (row-22) * 64 + col - 1)
       fbputchar(input_buffer[i], row, col);
-    else
-      fbputchar('_', row, col);
+    else{
+      if(i == (row-22) * 64 + col)
+        fbputchar(' ', row, col);
+      else
+        fbputchar('_', row, col);
+    }
   }
 }
 
