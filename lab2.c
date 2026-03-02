@@ -261,7 +261,7 @@ int main()
         }
       }else if (packet.keycode[0] == 0x28) {
         // ENTER
-        input_buffer[cursor_pos_x + (cursor_pos_y - 22) * 64] = '\n';
+        //input_buffer[cursor_pos_x + (cursor_pos_y - 22) * 64] = '\n';
         write(sockfd, input_buffer, strlen(input_buffer));
         cursor_pos_y = 22;
         cursor_pos_x = 0;
