@@ -111,7 +111,7 @@ void fbputchar(char c, int row, int col)
 void fbputs(const char *s, int row, int col)
 {
   char c;
-  while ((c = *s++) != 0) fbputchar(c, row, col++);
+  while (((c = *s++) != 0) || ((c = *s++) != '\0')) fbputchar(c, row, col++);
 }
 
 /* 8 X 16 console font from /lib/kbd/consolefonts/lat0-16.psfu.gz
@@ -130,7 +130,7 @@ void screen_shift(char screen_buffer[20][64], char *new_content){
   for(; i < (20 - new_rows); i++){
     //memset(screen_buffer[i], ' ', sizeof(screen_buffer[i]));
     strcpy(screen_buffer[i], screen_buffer[i+new_rows]);
-    fbputs((const char *)screen_buffer[i], i, 0);
+    fbputs((const char *)screen_buffer[i], i+1, 0);
   }
 
   // add new content to the bottom of the screen
@@ -141,7 +141,7 @@ void screen_shift(char screen_buffer[20][64], char *new_content){
     for(int j = strlen(screen_buffer[i]); j < 64; j++){
       screen_buffer[i][j] = ' ';
     }
-    fbputs((const char *)screen_buffer[i], i, 0);
+    fbputs((const char *)screen_buffer[i], i+1, 0);
   }
 }
 
