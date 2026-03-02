@@ -137,7 +137,7 @@ void screen_shift(char screen_buffer[20][64], char *new_content){
   for(; i < 20; i++){
     //memset(screen_buffer[i], ' ', sizeof(screen_buffer[i]));
     strcpy(screen_buffer[i], new_content + (i - (20 - new_rows)) * 64);
-
+    // fill the rest with spaces
     for(int j = strlen(screen_buffer[i]); j < 64; j++){
       screen_buffer[i][j] = ' ';
     }
@@ -146,7 +146,7 @@ void screen_shift(char screen_buffer[20][64], char *new_content){
 }
 
 void fbcursor(int row, int col, char *input_buffer){
-  for(int i = 0; i < strlen(input_buffer)-1; i++){
+  for(int i = 0; i < strlen(input_buffer); i++){
     if(i == (row-22) * 64 + col)
       fbputchar(input_buffer[i], row, col);
     else
