@@ -243,7 +243,8 @@ int main()
       printf("Pressed key: %s\n", keystate);
       fbputs(keystate, 0, 35);
 
-      //Handle only escape and call function
+      int pos = cursor_pos_x + (cursor_pos_y - 22) * 64;
+
       // ESCAPE
       if (packet.keycode[0] == 0x29) {
         memset(input_buffer, 0, strlen(input_buffer));
