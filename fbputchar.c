@@ -130,27 +130,25 @@ void screen_shift(char screen_buffer[20][64], char *new_content){
   for(; i < (20 - new_rows); i++){
     //memset(screen_buffer[i], ' ', sizeof(screen_buffer[i]));
     strcpy(screen_buffer[i], screen_buffer[i+new_rows]);
-    fbputs((const char *)screen_buffer[i], i+1, 0);
+    fbputs((const char *)screen_buffer[i], i, 0);
   }
 
   // add new content to the bottom of the screen
   for(; i < 20; i++){
     //memset(screen_buffer[i], ' ', sizeof(screen_buffer[i]));
     strcpy(screen_buffer[i], new_content + (i - (20 - new_rows)) * 64);
-    // fill the rest with spaces
+
     for(int j = strlen(screen_buffer[i]); j < 64; j++){
       screen_buffer[i][j] = ' ';
     }
-    fbputs((const char *)screen_buffer[i], i+1, 0);
+    fbputs((const char *)screen_buffer[i], i, 0);
   }
-
-  printf("Screen updated with new content: %s\n", new_content);
 }
 
 void fbcursor(int row, int col, char *input_buffer){
   for(int i = 0; i < strlen(input_buffer); i++){
     if(i == (row-22) * 64 + col)
-      fbputchar(input_buffer[i]=='\0' ? ' ' : input_buffer[i], row, col);
+      fbputchar(input_buffer[i], row, col);
     else
       fbputchar('_', row, col);
   }
