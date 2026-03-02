@@ -111,7 +111,7 @@ void fbputchar(char c, int row, int col)
 void fbputs(const char *s, int row, int col)
 {
   char c;
-  while (((c = *s++) != 0) || ((c = *s++) != '\0')) fbputchar(c, row, col++);
+  while ((c = *s++) != 0) fbputchar(c, row, col++);
 }
 
 /* 8 X 16 console font from /lib/kbd/consolefonts/lat0-16.psfu.gz
@@ -146,7 +146,7 @@ void screen_shift(char screen_buffer[20][64], char *new_content){
 }
 
 void fbcursor(int row, int col, char *input_buffer){
-  for(int i = 0; i < strlen(input_buffer); i++){
+  for(int i = 0; i < strlen(input_buffer)-1; i++){
     if(i == (row-22) * 64 + col)
       fbputchar(input_buffer[i], row, col);
     else
