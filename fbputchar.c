@@ -130,13 +130,12 @@ void screen_shift(char screen_buffer[20][64], char *new_content){
   for(; i < (20 - new_rows); i++){
     //memset(screen_buffer[i], ' ', sizeof(screen_buffer[i]));
     strcpy(screen_buffer[i], screen_buffer[i+new_rows]);
-    
     fbputs((const char *)screen_buffer[i], i+1, 0);
   }
 
   // add new content to the bottom of the screen
   for(; i < 20; i++){
-    //memset(screen_buffer[i], ' ', sizeof(screen_buffer[i]));
+    memset(screen_buffer[i], ' ', sizeof(screen_buffer[i]));
     strcpy(screen_buffer[i], new_content + (i - (20 - new_rows)) * 64);
     fbputs((const char *)screen_buffer[i], i+1, 0);
   }

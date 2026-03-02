@@ -252,8 +252,8 @@ int main()
           fbputs(screen_buffer[i], i+1, 0);
         }
         break;
-      }else if (packet.keycode[0] == 0x2a) {
-        // BACKSPACE
+      }else if (packet.keycode[0] == 0x2a || packet.keycode[0] == 0x4c) {
+        // BACKSPACE and delete
         if(cursor_pos_x > 0 || cursor_pos_y > 22){
           cursor_pos_y -= (cursor_pos_y > 22 && cursor_pos_x == 0) ? 1 : 0;
           cursor_pos_x = (64 + cursor_pos_x - 1) % 64;
