@@ -181,7 +181,7 @@ int main()
   int transferred;
   char keystate[12];
 
-  memset(input_buffer, ' ', sizeof(input_buffer));
+  //memset(input_buffer, 0, sizeof(input_buffer));
 
   int cursor_pos_x = 0;
   int cursor_pos_y = 22;
@@ -261,7 +261,7 @@ int main()
         }
       }else if (packet.keycode[0] == 0x28) {
         // ENTER
-        //input_buffer[cursor_pos_x + (cursor_pos_y - 22) * 64] = '\n';
+        input_buffer[cursor_pos_x + (cursor_pos_y - 22) * 64] = '\n';
         write(sockfd, input_buffer, strlen(input_buffer));
         cursor_pos_y = 22;
         cursor_pos_x = 0;
