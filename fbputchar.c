@@ -159,7 +159,7 @@ void fbcursor(int row, int col, char *input_buffer){
 void shift_text_left(int pos, char * input_buffer){
   int ends = 0;
   for(int i = pos; i < 127; i++){
-    if(input_buffer[i] == '\0')
+    if(input_buffer[i] == '\0' || input_buffer[i] == '\n')
       ends = 1;
     if(ends)
       fbputchar(' ', 22 + i / 64, i % 64);
