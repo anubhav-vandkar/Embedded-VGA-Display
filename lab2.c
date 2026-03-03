@@ -69,6 +69,7 @@ const char usb_to_ascii[USB_KEY_MAX] = {
   [0x2E] = '=',
   [0x2F] = '[',
   [0x30] = ']',
+  [0x31] = '\\',
   [0x33] = ';',
   [0x34] = '\'',
   [0x35] = '`',
@@ -194,7 +195,7 @@ int main()
   clear_input_box();
   clear_screen();
 
-  fbputs("Welcome to the CSEE 4840 Chawt!", 0, 1);
+  fbputs("Welcome to the CSEE 4840 Chat!", 0, 1);
 
   for (col = 0 ; col < 64 ; col++) {
     fbputchar('*', 21, col);
@@ -286,13 +287,17 @@ int main()
             cursor_pos++;
           }
         }else if(packet.keycode[0] == 0x52){ 
-          //down arrow
-          if(cursor_pos + 64 < strlen(input_buffer))
-            cursor_pos += 64;
-        }else {
           //up arrow
-          if(cursor_pos - 64 >= 0)
+          if(cursor_pos - 64 >= 0){
+            fbputchar(input_buffer[cursor_pos], 22 + cursor_pos / 64, cursor_pos % 64);
             cursor_pos -= 64;
+          }
+        }else {
+          //down arrow
+          if(cursor_pos + 64 < strlen(input_buffer)){
+            fbputchar(input_buffer[cursor_pos], 22 + cursor_pos / 64, cursor_pos % 64);
+            cursor_pos += 64;
+          }
         }
       } 
       else {
