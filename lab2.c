@@ -313,8 +313,8 @@ int main()
             input_buffer[cursor_pos] = c1;
             cursor_pos++;
           }
-          prev_char1 = c1;
         }        
+        prev_char1 = c1;
 
         if(c2 != prev_char2 && cursor_pos < BUFFER_SIZE)
         {
@@ -324,8 +324,8 @@ int main()
             input_buffer[cursor_pos] = c2;
             cursor_pos++;
           }
-          prev_char2 = c2;
         }
+        prev_char2 = c2;
       }
     }
     usleep(10000);
