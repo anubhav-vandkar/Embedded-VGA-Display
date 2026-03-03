@@ -159,19 +159,12 @@ void fbcursor(int pos, char *input_buffer){
 }
 
 void shift_text_left(int pos, char * input_buffer){
-  int ends = 0;
-  for(int i = pos; i < 127; i++){
-    if(input_buffer[i] == '\0' || input_buffer[i] == '\n')
-      ends = 1;
-    if(ends)
-      fbputchar(' ', 22 + i / 64, i % 64);
-    else{
-      input_buffer[i] = input_buffer[i+1];
-      fbputchar(input_buffer[i], 22 + i / 64, i % 64);
-    }
+  int ends = strlen(input_buffer);
+  for(int i = pos; i < ends; i++){
+    input_buffer[i] = input_buffer[i+1];
+    fbputchar(input_buffer[i], 22 + i / 64, i % 64);
   }
-  //input_buffer[127] = '\0';
-  fbputchar(' ', 23, 63);
+  fbputchar(' ', 22 + ends / 64, ends % 64);
 }
 
 static unsigned char font[] = {
