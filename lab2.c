@@ -276,14 +276,14 @@ int main()
         if(packet.keycode[0] == 0x50){ 
           //left arrow and check 0
           if(cursor_pos > 0){
-            cursor_pos--;
             fbputchar(input_buffer[cursor_pos], 22 + cursor_pos / 64, cursor_pos % 64);
+            cursor_pos--;
           }
         }else if(packet.keycode[0] == 0x4f){ 
           //right arrow and check less than buffer size
           if(cursor_pos + 1 < strlen(input_buffer)){
-            cursor_pos++;
             fbputchar(input_buffer[cursor_pos], 22 + cursor_pos / 64, cursor_pos % 64);
+            cursor_pos++;
           }
         }else if(packet.keycode[0] == 0x52){ 
           //down arrow
@@ -307,7 +307,7 @@ int main()
           when a key is released, they are only updated when a new key is pressed. So we need to keep track of the previous keycodes
         */
 
-        if(c1 != prev_char1 && c1 != prev_char2 && cursor_pos < BUFFER_SIZE)
+        if((c1 != prev_char1 || c1 != prev_char2) && cursor_pos < BUFFER_SIZE)
         {
           printf("Pressed key: %c\n", c1);
           if(c1 != 0){
