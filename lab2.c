@@ -116,7 +116,7 @@ const char usb_to_ascii_shift[USB_KEY_MAX] = {
   [0x25] = '*',
   [0x26] = '(',
   [0x27] = ')',
-
+  [0x2C] = ' ',
   [0x2D] = '_',
   [0x2E] = '+',
   [0x2F] = '{',
@@ -294,7 +294,7 @@ int main()
           }
         }else {
           //down arrow
-          if(cursor_pos + 64 < strlen(input_buffer)){
+          if(cursor_pos + 64 <= strlen(input_buffer)){
             fbputchar(input_buffer[cursor_pos], 22 + cursor_pos / 64, cursor_pos % 64);
             cursor_pos += 64;
           }
