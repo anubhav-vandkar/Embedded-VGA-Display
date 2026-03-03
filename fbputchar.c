@@ -124,7 +124,6 @@ void screen_shift(char screen_buffer[20][64], char *new_content){
   int content_len = strlen(new_content);
   int temp = content_len / 64 + 1;
   int new_rows = (temp > 20) ? 20 : temp;
-  int i = 0;
 
   // add new content to the bottom of the screen
   for(int i=0; i < 20; i++){
