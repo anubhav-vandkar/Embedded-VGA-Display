@@ -161,9 +161,9 @@ void clear_input_box(){
 }
 
 void clear_screen(){
+  memset(screen_buffer, 0, sizeof(screen_buffer));
   for(int i = 0; i < 20; i++){
     for(int j = 0; j < 64; j++){
-      screen_buffer[i][j] = 0;
       fbputchar(' ', i, j);
     }
   }
@@ -264,6 +264,8 @@ int main()
       }
       else if (packet.keycode[0] == 0x28) {
         // ENTER
+        if(strlen(input_buffer) == 0)
+          continue;
         input_buffer[cursor_pos] = '\n';
         write(sockfd, input_buffer, strlen(input_buffer));
         cursor_pos = 0;
@@ -274,7 +276,7 @@ int main()
         if(packet.keycode[0] == 0x50){ 
           //left arrow and check 0
           if(cursor_pos > 0){
-            fbputchar(input_buffer[cursor_pos], 22 + cursor_pos / 64, cursor_pos % 64);
+            fbputchar(cursor_pos>strlen(input_buffer) ? ' ' : input_buffer[cursor_pos], 22 + cursor_pos / 64, cursor_pos % 64);
             cursor_pos--;
           }
         }else if(packet.keycode[0] == 0x4f){ 
