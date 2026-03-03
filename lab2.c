@@ -297,33 +297,22 @@ int main()
         int check_shift = (packet.modifiers & USB_LSHIFT) || (packet.modifiers & USB_RSHIFT);
         char c1 = check_shift ? usb_to_ascii_shift[packet.keycode[0]]: usb_to_ascii[packet.keycode[0]];
         char c2 = check_shift ? usb_to_ascii_shift[packet.keycode[1]]: usb_to_ascii[packet.keycode[1]];
-        
-        /*
-          handle the case where 2 keys for example, 'w' and 'd' is pressed 
-          and then 'd' is released, 'w' is not printed again or in the instant shift is released,
-          'w' is not printed again. This is because the keycode[0] and keycode[1] are not updated
-          when a key is released, they are only updated when a new key is pressed. So we need to keep track of the previous keycodes
-        */
 
-        if(!(c1 == prev_char1 || c1 == prev_char2) && cursor_pos < BUFFER_SIZE)
+        if(!(c1 == prev_char1 || c1 == prev_char2 || c1 == 0) && cursor_pos < BUFFER_SIZE)
         {
           printf("Pressed key: %c\n", c1);
-          if(c1 != 0){
-            fbputchar(c1, 22 + cursor_pos / 64, cursor_pos % 64);
-            input_buffer[cursor_pos] = c1;
-            cursor_pos++;
-          }
+          fbputchar(c1, 22 + cursor_pos / 64, cursor_pos % 64);
+          input_buffer[cursor_pos] = c1;
+          cursor_pos++;
         }        
         prev_char1 = c1;
 
-        if(c2 != prev_char2 && cursor_pos < BUFFER_SIZE)
+        if(!(c2 == prev_char2 || c2 == 0) && cursor_pos < BUFFER_SIZE)
         {
           printf("Pressed key: %c\n", c2);
-          if(c2 != 0){
-            fbputchar(c2, 22 + cursor_pos / 64, cursor_pos % 64);
-            input_buffer[cursor_pos] = c2;
-            cursor_pos++;
-          }
+          fbputchar(c2, 22 + cursor_pos / 64, cursor_pos % 64);
+          input_buffer[cursor_pos] = c2;
+          cursor_pos++;
         }
         prev_char2 = c2;
       }
