@@ -196,7 +196,7 @@ int main()
   clear_input_box();
   clear_screen();
 
-  fbputs("Welcome to the CSEE 4840 Chat!", 0, 1);
+  fbputs("Welcome to the CSEE 4840 Chawt!", 0, 1);
 
   for (col = 0 ; col < 64 ; col++) {
     fbputchar('*', 21, col);
@@ -307,16 +307,18 @@ int main()
           when a key is released, they are only updated when a new key is pressed. So we need to keep track of the previous keycodes
         */
 
-        if(packet.keycode[0] != prev_char1 && cursor_pos < BUFFER_SIZE)
+        if(c1 != prev_char1 && c1 != prev_char2 && cursor_pos < BUFFER_SIZE)
         {
           printf("Pressed key: %c\n", c1);
-          fbputchar(c1, 22 + cursor_pos / 64, cursor_pos % 64);
-          input_buffer[cursor_pos] = c1;
-          cursor_pos++;
+          if(c1 != 0){
+            fbputchar(c1, 22 + cursor_pos / 64, cursor_pos % 64);
+            input_buffer[cursor_pos] = c1;
+            cursor_pos++;
+          }
           prev_char1 = c1;
         }        
 
-        if(packet.keycode[1] != prev_char2 && cursor_pos < BUFFER_SIZE)
+        if(c2 != prev_char2 && cursor_pos < BUFFER_SIZE)
         {
           printf("Pressed key: %c\n", c2);
           fbputchar(c2, 22 + cursor_pos / 64, cursor_pos % 64);
