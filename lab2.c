@@ -323,8 +323,8 @@ int main()
             fbputchar(c2, 22 + cursor_pos / 64, cursor_pos % 64);
             input_buffer[cursor_pos] = c2;
             cursor_pos++;
-            prev_char2 = c2;
           }
+          prev_char2 = c2;
         }
       }
     }
