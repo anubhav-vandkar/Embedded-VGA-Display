@@ -141,9 +141,8 @@ void screen_shift(char screen_buffer[20][64], char *new_content){
     for(int j = strlen(screen_buffer[i])-1; j < 64; j++){
       screen_buffer[i][j] = ' ';
     }
-    fbputs((const char *)screen_buffer[i], i+1, 0);
+    fbputs(screen_buffer[i], i+1, 0);
   }
-  printf("Char at 0 is: %c\n", screen_buffer[19][0]);
 }
 
 void fbcursor(int pos, char *input_buffer){
