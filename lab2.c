@@ -64,13 +64,11 @@ const char usb_to_ascii[USB_KEY_MAX] = {
   [0x26] = '9',
   [0x27] = '0',
 
-  [0x28] = '\n',
   [0x2C] = ' ',
   [0x2D] = '-',    
   [0x2E] = '=',
   [0x2F] = '[',
   [0x30] = ']',
-  [0x31] = '\\',
   [0x33] = ';',
   [0x34] = '\'',
   [0x35] = '`',
@@ -307,7 +305,7 @@ int main()
           when a key is released, they are only updated when a new key is pressed. So we need to keep track of the previous keycodes
         */
 
-        if((c1 != prev_char1 || c1 != prev_char2) && cursor_pos < BUFFER_SIZE)
+        if(!(c1 == prev_char1 || c1 == prev_char2) && cursor_pos < BUFFER_SIZE)
         {
           printf("Pressed key: %c\n", c1);
           if(c1 != 0){
@@ -321,10 +319,12 @@ int main()
         if(c2 != prev_char2 && cursor_pos < BUFFER_SIZE)
         {
           printf("Pressed key: %c\n", c2);
-          fbputchar(c2, 22 + cursor_pos / 64, cursor_pos % 64);
-          input_buffer[cursor_pos] = c2;
-          cursor_pos++;
-          prev_char2 = c2;
+          if(c2 != 0){
+            fbputchar(c2, 22 + cursor_pos / 64, cursor_pos % 64);
+            input_buffer[cursor_pos] = c2;
+            cursor_pos++;
+            prev_char2 = c2;
+          }
         }
       }
     }
