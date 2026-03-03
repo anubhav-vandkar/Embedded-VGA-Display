@@ -164,6 +164,8 @@ void shift_text_left(int pos, char * input_buffer){
     input_buffer[i] = input_buffer[i+1];
     fbputchar(input_buffer[i], 22 + i / 64, i % 64);
   }
+  input_buffer[ends-1] = '\0';
+  memset(input_buffer + ends - 1, 0, 1);
   fbputchar(' ', 22 + ends / 64, ends % 64);
 }
 
