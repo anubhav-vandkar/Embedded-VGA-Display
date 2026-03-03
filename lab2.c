@@ -281,8 +281,7 @@ int main()
           }
         }else if(packet.keycode[0] == 0x4f){ 
           //right arrow and check less than buffer size
-          if(cursor_pos + 1 < strlen(input_buffer)){
-            fbputchar(input_buffer[cursor_pos], 22 + cursor_pos / 64, cursor_pos % 64);
+          if(cursor_pos < strlen(input_buffer)){
             cursor_pos++;
           }
         }else if(packet.keycode[0] == 0x52){ 
