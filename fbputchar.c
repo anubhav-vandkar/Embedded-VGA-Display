@@ -143,19 +143,18 @@ void screen_shift(char screen_buffer[20][64], char *new_content){
     }
     fbputs((const char *)screen_buffer[i], i+1, 0);
   }
-
 }
 
-void fbcursor(int row, int col, char *input_buffer){
-  for(int i = 0; i < strlen(input_buffer); i++){
-    if(i != (row-22) * 64 + col)
-      fbputchar(input_buffer[i], row, col);
-    else{
-      if(i == strlen(input_buffer)-1)
-        fbputchar(' ', row, col);
-      else
-        fbputchar('_', row, col);
-    }
+void fbcursor(int pos, char *input_buffer){
+  int row, col;
+  row = 22 + pos / 64;
+  col = pos % 64;
+
+  fbputchar('_', row, col);
+
+  if(pos != strlen(input_buffer)){
+    int len = strlen(input_buffer);
+    fbputchar(' ', 22 + len / 64, len % 64);
   }
 }
 

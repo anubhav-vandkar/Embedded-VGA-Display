@@ -183,8 +183,10 @@ int main()
 
   //memset(input_buffer, 0, sizeof(input_buffer));
 
-  int cursor_pos_x = 0;
-  int cursor_pos_y = 22;
+  int cursor_pos = 0;
+
+  int prev_char1 = 0;
+  int prev_char2 = 0;
 
   if ((err = fbopen()) != 0) {
     fprintf(stderr, "Error: Could not open framebuffer: %d\n", err);
@@ -236,83 +238,95 @@ int main()
 			      (unsigned char *) &packet, sizeof(packet),
 			      &transferred, 0);
 
-    fbcursor(cursor_pos_y, cursor_pos_x, input_buffer);
+    fbcursor(cursor_pos, input_buffer);
     if (transferred == sizeof(packet)) {
 
       sprintf(keystate, "%02x %02x %02x", packet.modifiers, packet.keycode[0], packet.keycode[1]);
       printf("Pressed key: %s\n", keystate);
       fbputs(keystate, 0, 35);
 
-      int pos = strlen(input_buffer);
-
       // ESCAPE
       if (packet.keycode[0] == 0x29) {
-        memset(input_buffer, 0, strlen(input_buffer));
-        memset(screen_buffer, 0, sizeof(screen_buffer));
-        for(int i=0; i < 20; i++){
-          fbputs(screen_buffer[i], i+1, 0);
-        }
+        clear_screen();
+        clear_screen();
+        close(sockfd);
         break;
-      }else if (packet.keycode[0] == 0x2a || packet.keycode[0] == 0x4c) {
-        // BACKSPACE and delete
-        if(packet.keycode[0] == 0x2a){
-          if(cursor_pos_x > 0 || cursor_pos_y > 22){
-            cursor_pos_y -= (cursor_pos_y > 22 && cursor_pos_x == 0) ? 1 : 0;
-            cursor_pos_x = (64 + cursor_pos_x - 1) % 64;
-          }
+      }
+      else if (packet.keycode[0] == 0x2a){ 
+        // BACKSPACE
+        if(cursor_pos > 0)
+          cursor_pos--;
+        shift_text_left(cursor_pos, input_buffer);
+      }
+      else if(packet.keycode[0] == 0x4c) {
+        // DELETE
+        if(cursor_pos < strlen(input_buffer)){
+          shift_text_left(cursor_pos, input_buffer);
         }
-        shift_text_left(cursor_pos_x + (cursor_pos_y - 22) * 64, input_buffer);
-      }else if (packet.keycode[0] == 0x28) {
+      }
+      else if (packet.keycode[0] == 0x28) {
         // ENTER
-        input_buffer[cursor_pos_x + (cursor_pos_y - 22) * 64] = '\n';
+        input_buffer[cursor_pos] = '\n';
         write(sockfd, input_buffer, strlen(input_buffer));
-        cursor_pos_y = 22;
-        cursor_pos_x = 0;
+        cursor_pos = 0;
         clear_input_box();
-      }else if(packet.keycode[0] >= 0x4f && packet.keycode[0] <= 0x52){ 
-        fbputchar(input_buffer[cursor_pos_x + (cursor_pos_y - 22) * 64], cursor_pos_y, cursor_pos_x);
-        //left and right arrow keys
-        if(packet.keycode[0] == 0x50){ //left arrow
-          if(cursor_pos_x > 0 || cursor_pos_y > 22){
-            cursor_pos_y -= (cursor_pos_y > 22 && cursor_pos_x == 0) ? 1 : 0;
-            cursor_pos_x = (64 + cursor_pos_x - 1) % 64;
+      }
+      else if(packet.keycode[0] >= 0x4f && packet.keycode[0] <= 0x52){ 
+        //arrow keys
+        if(packet.keycode[0] == 0x50){ 
+          //left arrow and check 0
+          if(cursor_pos > 0){
+            cursor_pos--;
+            fbputchar(input_buffer[cursor_pos], 22 + cursor_pos / 64, cursor_pos % 64);
           }
-        }else if(packet.keycode[0] == 0x4f && cursor_pos_x + (cursor_pos_y-22)*64 < strlen(input_buffer)){ 
+        }else if(packet.keycode[0] == 0x4f){ 
           //right arrow and check less than buffer size
-          if(cursor_pos_x < 63 || cursor_pos_y < 23){
-            cursor_pos_y = cursor_pos_y + (cursor_pos_x + 1)/64;
-            cursor_pos_x = (cursor_pos_x + 1) % 64;
+          if(cursor_pos + 1 < strlen(input_buffer)){
+            cursor_pos++;
+            fbputchar(input_buffer[cursor_pos], 22 + cursor_pos / 64, cursor_pos % 64);
           }
         }else if(packet.keycode[0] == 0x52){ 
-          if(cursor_pos_y == 23)
-            cursor_pos_y--;
-        }else if(packet.keycode[0] == 0x51){
-          if(cursor_pos_y == 22)
-            cursor_pos_y++;
+          //down arrow
+          if(cursor_pos + 64 < strlen(input_buffer))
+            cursor_pos += 64;
+        }else {
+          //up arrow
+          if(cursor_pos - 64 >= 0)
+            cursor_pos -= 64;
         }
       } 
       else {
-        if(packet.keycode[0] == 0x00 || (cursor_pos_y == 23 && cursor_pos_x == 63))
-          continue; // ignore if buffer is full
+        int check_shift = (packet.modifiers & USB_LSHIFT) || (packet.modifiers & USB_RSHIFT);
+        char c1 = check_shift ? usb_to_ascii_shift[packet.keycode[0]]: usb_to_ascii[packet.keycode[0]];
+        char c2 = check_shift ? usb_to_ascii_shift[packet.keycode[1]]: usb_to_ascii[packet.keycode[1]];
         
-        char c = (packet.modifiers & USB_LSHIFT) || (packet.modifiers & USB_RSHIFT) ? usb_to_ascii_shift[packet.keycode[0]]: usb_to_ascii[packet.keycode[0]];
-        printf("Pressed key: %c\n", c);
-        fbputchar(c, cursor_pos_y, cursor_pos_x);
-        input_buffer[cursor_pos_x + (cursor_pos_y - 22) * 64] = c;
-        cursor_pos_y = cursor_pos_y + (cursor_pos_x + 1)/64;
-        cursor_pos_x = (cursor_pos_x + 1) % 64;
+        /*
+          handle the case where 2 keys for example, 'w' and 'd' is pressed 
+          and then 'd' is released, 'w' is not printed again or in the instant shift is released,
+          'w' is not printed again. This is because the keycode[0] and keycode[1] are not updated
+          when a key is released, they are only updated when a new key is pressed. So we need to keep track of the previous keycodes
+        */
 
-        if(packet.keycode[1] == 0x00) 
-          continue; // ignore if not pressed
+        if(packet.keycode[0] != prev_char1 && cursor_pos < BUFFER_SIZE)
+        {
+          printf("Pressed key: %c\n", c1);
+          fbputchar(c1, 22 + cursor_pos / 64, cursor_pos % 64);
+          input_buffer[cursor_pos] = c1;
+          cursor_pos++;
+          prev_char1 = c1;
+        }        
 
-        c = (packet.modifiers & USB_LSHIFT) || (packet.modifiers & USB_RSHIFT) ? usb_to_ascii_shift[packet.keycode[1]]: usb_to_ascii[packet.keycode[1]];
-        printf("Pressed key: %c\n", c);
-        fbputchar(c, cursor_pos_y, cursor_pos_x);
-        input_buffer[cursor_pos_x + (cursor_pos_y - 22) * 64] = c;
-        cursor_pos_y = cursor_pos_y + (cursor_pos_x + 1)/64;
-        cursor_pos_x = (cursor_pos_x + 1) % 64;
+        if(packet.keycode[1] != prev_char2 && cursor_pos < BUFFER_SIZE)
+        {
+          printf("Pressed key: %c\n", c2);
+          fbputchar(c2, 22 + cursor_pos / 64, cursor_pos % 64);
+          input_buffer[cursor_pos] = c2;
+          cursor_pos++;
+          prev_char2 = c2;
+        }
       }
     }
+    usleep(10000);
   }
 
   /* Terminate the network thread */
