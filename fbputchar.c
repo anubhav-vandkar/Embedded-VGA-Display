@@ -136,7 +136,7 @@ void screen_shift(char screen_buffer[20][64], char *new_content){
       char *new_content_start = new_content + (i - (20 - new_rows)) * 64; // 
       strncpy(screen_buffer[i], new_content_start, 64);
 
-      for(int j = strlen(screen_buffer[i]); j < 64; j++)
+      for(int j = strlen(screen_buffer[i])-1; j < 64; j++)
         screen_buffer[i][j] = ' ';
 
       screen_buffer[i][64] = '\0';
