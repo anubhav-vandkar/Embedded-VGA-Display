@@ -131,15 +131,15 @@ void screen_shift(char screen_buffer[20][64], char *new_content){
     if(i < (20 - new_rows)){
       strcpy(screen_buffer[i], screen_buffer[i+new_rows]);
     } else {
-      //only last line of new content is displayed, need to fix this
-      char new_content_start = new_content + (i - (20 - new_rows)) * 64;
+      //only last line of new content is displayed, need to fin_buffer[i]x this
+      char *new_content_start = new_content + (i - (20 - new_rows)) * 64; // 
       strcpy(screen_buffer[i], new_content_start);
 
       for(int j = strlen(screen_buffer[i])-1; j < 64; j++){
         screen_buffer[i][j] = ' ';
       }
     }
-    
+    fbputchar(screen_buffer[i][0], i+1, 0);
     fbputs(screen_buffer[i], i+1, 0);
   }
 }
