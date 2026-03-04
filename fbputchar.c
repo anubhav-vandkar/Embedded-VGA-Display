@@ -139,8 +139,9 @@ void screen_shift(char screen_buffer[20][64], char *new_content){
         screen_buffer[i][j] = ' ';
       }
     }
-    fbputchar(screen_buffer[i][0], i+1, 0);
     fbputs(screen_buffer[i], i+1, 0);
+    printf("Screen buffer row %d: %s\n", i, screen_buffer[i][0]);
+    fbputchar(screen_buffer[i][0], i+1, 0);
   }
 }
 
