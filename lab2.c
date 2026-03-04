@@ -323,7 +323,7 @@ int main()
         }        
         prev_char1 = packet.keycode[0];
 
-        if(!(packet.keycode[1] == prev_char2 || packet.keycode[1] == 0) && cursor_pos < BUFFER_SIZE-1)
+        if(!(packet.keycode[1] == prev_char2 || packet.keycode[1] == 0) && strlen(input_buffer) < BUFFER_SIZE-1)
         {
           printf("Pressed key: %c\n", c2);
           fbputchar(c2, 22 + cursor_pos / 64, cursor_pos % 64);
