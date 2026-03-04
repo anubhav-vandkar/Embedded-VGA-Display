@@ -13,7 +13,7 @@ extern int fbopen(void);
 extern void fbputchar(char, int, int);
 extern void fbputs(const char *, int, int);
 extern void fbcursor(int, char *);
-extern void screen_shift(char screen_buffer[20][64], char *new_content);
+extern void screen_shift(char screen_buffer[20][65], char *new_content);
 extern void shift_text_left(int pos, char * input_buffer);
 
 #endif
