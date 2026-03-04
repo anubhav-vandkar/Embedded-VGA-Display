@@ -160,7 +160,7 @@ void fbcursor(int pos, char *input_buffer){
 void shift_text_left(int pos, char * input_buffer){
   int ends = strlen(input_buffer);
 
-  for(int i = pos+1; i < ends; i++){
+  for(int i = pos+1; i < ends-1; i++){
     input_buffer[i] = input_buffer[i+1];
     fbputchar(input_buffer[i], 22 + i / 64, i % 64);
   }

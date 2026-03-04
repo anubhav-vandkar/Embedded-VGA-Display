@@ -301,6 +301,7 @@ int main()
             cursor_pos += 64;
           }
         }
+        fbcursor(cursor_pos, input_buffer);
       } 
       else {
         int check_shift = (packet.modifiers & USB_LSHIFT) || (packet.modifiers & USB_RSHIFT);
@@ -325,6 +326,7 @@ int main()
         }
         prev_char2 = packet.keycode[1];
       }
+      fbcursor(cursor_pos, input_buffer);
     }
     usleep(10000);
   }
