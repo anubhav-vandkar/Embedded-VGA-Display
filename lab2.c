@@ -313,7 +313,10 @@ int main()
           printf("Pressed key: %c\n", c1);
           fbputchar(c1, 22 + cursor_pos / 64, cursor_pos % 64);
           if(cursor_pos < strlen(input_buffer)){
-            shift_text_right(cursor_pos, input_buffer);
+            for(int i = cursor_pos+1; i < strlen(input_buffer); i++){
+              input_buffer[i+1] = input_buffer[i];
+              fbputchar(input_buffer[i], 22 + i / 64, i % 64);
+            }
           }
           input_buffer[cursor_pos] = c1;
           cursor_pos++;
@@ -325,7 +328,10 @@ int main()
           printf("Pressed key: %c\n", c2);
           fbputchar(c2, 22 + cursor_pos / 64, cursor_pos % 64);
           if(cursor_pos < strlen(input_buffer)){
-            shift_text_right(cursor_pos, input_buffer);
+            for(int i = cursor_pos+1; i < strlen(input_buffer); i++){
+              input_buffer[i+1] = input_buffer[i];
+              fbputchar(input_buffer[i], 22 + i / 64, i % 64);
+            }
           }
           input_buffer[cursor_pos] = c2;
           cursor_pos++;
