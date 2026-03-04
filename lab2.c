@@ -267,7 +267,8 @@ int main()
         // ENTER
         if(strlen(input_buffer) == 0)
           continue;
-        input_buffer[cursor_pos] = '\n';
+        
+        input_buffer[strlen(input_buffer)] = '\n';
         write(sockfd, input_buffer, strlen(input_buffer));
         cursor_pos = 0;
         clear_input_box();
