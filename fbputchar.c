@@ -123,7 +123,7 @@ void screen_shift(char screen_buffer[20][64], char *new_content){
 
   int content_len = strlen(new_content);
   int temp = content_len / 64 + 1;
-  int new_rows = (temp > 20) ? 20 : temp;
+  int new_rows = (temp > 20) ? 20 : temp; 
 
   // add new content to the bottom of the screen
   for(int i=0; i < 20; i++){
@@ -131,8 +131,10 @@ void screen_shift(char screen_buffer[20][64], char *new_content){
     if(i < (20 - new_rows)){
       strcpy(screen_buffer[i], screen_buffer[i+new_rows]);
     } else {
-      strcpy(screen_buffer[i], new_content + (i - (20 - new_rows)) * 64);
-      // fill the rest with spaces
+      //only last line of new content is displayed, need to fix this
+      char *new_content_start = new_content + (i - (20 - new_rows)) * 64;
+      strcpy(screen_buffer[i], new_content_start);
+
       for(int j = strlen(screen_buffer[i])-1; j < 64; j++){
         screen_buffer[i][j] = ' ';
       }
