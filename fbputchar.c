@@ -161,13 +161,14 @@ void fbcursor(int pos, char *input_buffer){
 
 void shift_text_left(int pos, char * input_buffer){
   int ends = strlen(input_buffer);
+  input_buffer[ends-1] = '\0';
+  memset(input_buffer + ends - 1, 0, 1);
+  fbputchar(' ', 22 + ends / 64, ends % 64);
   for(int i = pos; i < ends; i++){
     input_buffer[i] = input_buffer[i+1];
     fbputchar(input_buffer[i], 22 + i / 64, i % 64);
   }
-  input_buffer[ends-1] = '\0';
-  memset(input_buffer + ends - 1, 0, 1);
-  fbputchar(' ', 22 + ends / 64, ends % 64);
+
 }
 
 static unsigned char font[] = {
