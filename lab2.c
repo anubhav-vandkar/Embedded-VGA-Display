@@ -240,7 +240,7 @@ int main()
     fbcursor(cursor_pos, input_buffer);
     if (transferred == sizeof(packet)) {
 
-      sprintf(keystate, "%02x %02x %02x", packet.modifiers, packet.keycode[0], packet.keycode[1]);
+      //sprintf(keystate, "%02x %02x %02x", packet.modifiers, packet.keycode[0], packet.keycode[1]);
       printf("Pressed key: %s\n", keystate);
       fbputs(keystate, 0, 35);
 
