@@ -308,7 +308,7 @@ int main()
         char c1 = check_shift ? usb_to_ascii_shift[packet.keycode[0]]: usb_to_ascii[packet.keycode[0]];
         char c2 = check_shift ? usb_to_ascii_shift[packet.keycode[1]]: usb_to_ascii[packet.keycode[1]];
 
-        if(!(packet.keycode[0] == prev_char1 || packet.keycode[0] == prev_char2 || packet.keycode[0] == 0) && cursor_pos < BUFFER_SIZE-1)
+        if(!(packet.keycode[0] == prev_char1 || packet.keycode[0] == prev_char2 || packet.keycode[0] == 0) && strlen(input_buffer) < BUFFER_SIZE-1)
         {
           printf("Pressed key: %c\n", c1);
           fbputchar(c1, 22 + cursor_pos / 64, cursor_pos % 64);
