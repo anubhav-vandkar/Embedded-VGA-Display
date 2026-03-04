@@ -165,7 +165,7 @@ void clear_screen(){
   memset(screen_buffer, 0, sizeof(screen_buffer));
   for(int i = 0; i < 20; i++){
     for(int j = 0; j < 64; j++){
-      fbputchar(' ', i, j);
+      fbputchar(' ', i+1, j);
     }
   }
 }
@@ -245,25 +245,25 @@ int main()
       fbputs(keystate, 0, 35);
 
       // ESCAPE
-      if (packet.keycode[0] == 0x29) {
+      if (packet.keycode[0] == 0x29 || packet.keycode[1] == 0x29) {
         clear_screen();
         clear_screen();
         close(sockfd);
         break;
       }
-      else if (packet.keycode[0] == 0x2a){ 
+      else if (packet.keycode[0] == 0x2a || packet.keycode[1] == 0x2a) { 
         // BACKSPACE
         if(cursor_pos > 0)
           cursor_pos--;
         shift_text_left(cursor_pos, input_buffer);
       }
-      else if(packet.keycode[0] == 0x4c) {
+      else if(packet.keycode[0] == 0x4c || packet.keycode[1] == 0x4c) {
         // DELETE
         if(cursor_pos < strlen(input_buffer)){
           shift_text_left(cursor_pos, input_buffer);
         }
       }
-      else if (packet.keycode[0] == 0x28) {
+      else if (packet.keycode[0] == 0x28 || packet.keycode[1] == 0x28) {
         // ENTER
         if(strlen(input_buffer) == 0)
           continue;
@@ -273,21 +273,21 @@ int main()
         cursor_pos = 0;
         clear_input_box();
       }
-      else if(packet.keycode[0] >= 0x4f && packet.keycode[0] <= 0x52){ 
+      else if((packet.keycode[0] >= 0x4f && packet.keycode[0] <= 0x52) || (packet.keycode[1] >= 0x4f && packet.keycode[1] <= 0x52)){ 
         //arrow keys
-        if(packet.keycode[0] == 0x50){ 
+        if(packet.keycode[0] == 0x50 || packet.keycode[1] == 0x50){ 
           //left arrow and check 0
           if(cursor_pos > 0){
             fbputchar(cursor_pos>strlen(input_buffer) ? ' ' : input_buffer[cursor_pos], 22 + cursor_pos / 64, cursor_pos % 64);
             cursor_pos--;
           }
-        }else if(packet.keycode[0] == 0x4f){ 
+        }else if(packet.keycode[0] == 0x4f || packet.keycode[1] == 0x4f){ 
           //right arrow and check less than buffer size
           if(cursor_pos < strlen(input_buffer)){
             fbputchar(input_buffer[cursor_pos], 22 + cursor_pos / 64, cursor_pos % 64);
             cursor_pos++;
           }
-        }else if(packet.keycode[0] == 0x52){ 
+        }else if(packet.keycode[0] == 0x52 || packet.keycode[1] == 0x52){ 
           //up arrow
           if(cursor_pos - 64 >= 0){
             fbputchar(input_buffer[cursor_pos], 22 + cursor_pos / 64, cursor_pos % 64);
