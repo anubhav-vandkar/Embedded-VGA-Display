@@ -255,6 +255,7 @@ int main()
         // BACKSPACE
         if(cursor_pos > 0)
           cursor_pos--;
+        fbcursor(cursor_pos, input_buffer);
         shift_text_left(cursor_pos, input_buffer);
       }
       else if(packet.keycode[0] == 0x4c || packet.keycode[1] == 0x4c) {
