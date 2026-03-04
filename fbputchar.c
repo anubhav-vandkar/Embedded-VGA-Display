@@ -175,11 +175,10 @@ void shift_text_left(int pos, char * input_buffer){
 void shift_text_right(int pos, char * input_buffer){
   int ends = strlen(input_buffer);
 
-  for(int i = ends; i > pos; i--){
+  for(int i = ends+1; i >= pos; i--){
     input_buffer[i] = input_buffer[i-1];
     fbputchar(input_buffer[i], 22 + i / 64, i % 64);
   }
-  input_buffer[ends] = '\0';
 }
 
 static unsigned char font[] = {
