@@ -130,9 +130,11 @@ void screen_shift(char screen_buffer[20][64], char *new_content){
     //memset(screen_buffer[i], 0, sizeof(screen_buffer[i]));
     if(i < (20 - new_rows)){
       strncpy(screen_buffer[i], screen_buffer[i+new_rows], 64);
+      //add \0 
     } else {
       char *new_content_start = new_content + (i - (20 - new_rows)) * 64; // 
       strncpy(screen_buffer[i], new_content_start, 64);
+      screen_buffer[i][64] = '\0';
       for(int j = strlen(screen_buffer[i])-1; j < 64; j++){
         screen_buffer[i][j] = ' ';
       }
@@ -160,7 +162,7 @@ void fbcursor(int pos, char *input_buffer){
 void shift_text_left(int pos, char * input_buffer){
   int ends = strlen(input_buffer);
 
-  for(int i = pos+1; i < ends-1; i++){
+  for(int i = pos; i < ends-1; i++){
     input_buffer[i] = input_buffer[i+1];
     fbputchar(input_buffer[i], 22 + i / 64, i % 64);
   }

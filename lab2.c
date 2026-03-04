@@ -150,7 +150,7 @@ void *network_thread_f(void *);
 
 pthread_mutex_t screen_buffer_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-char screen_buffer[20][64];
+char screen_buffer[20][65];
 char input_buffer[BUFFER_SIZE];
 
 void clear_input_box(){
